@@ -1,34 +1,80 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+- public/
+  - favicon.ico
+  - index.html
+ - src/
+  - components/
+    - Header/
+      - Header.tsx
+      - Header.module.css
+    - Footer/
+      - Footer.tsx
+      - Footer.module.css
+  - common/
+    - types/
+      - User.ts
+      - Idea.ts
+      - Jargon.ts
+      - Goal.ts
+      - Task.ts
+      - Notification.ts
+      - Objection.ts
+      - Trend.ts
+      - Advertisement.ts
+      - Image.ts
+      - Entry.ts
+      - Ask.ts
+    - constants/
+      - routes.ts
+      - apiEndpoints.ts
+  - pages/
+    - _app.tsx
+    - _document.tsx
+    - index.tsx
+    - about.tsx
+    - contact.tsx
+    - login.tsx
+    - dashboard/
+      - index.tsx
+      - analytics.tsx
+      - settings.tsx
+      - ...
+  - util/
+    - firebase.ts
+    - api.ts
+    - auth.ts
+    - utils.ts
 
-## Getting Started
 
-First, run the development server:
+Project Name
+A brief description of what the project does.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+Architecture
+Describe the overall architecture of the project, including:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The high-level components and how they interact with each other
+Any third-party services or APIs that the project relies on
+The data storage solution (e.g. Firestore, Realtime Database)
+Any other relevant details about the architecture
+Getting Started
+Include instructions on how to get the project up and running locally, including:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Any prerequisites (e.g. Node.js, Firebase CLI)
+How to install and configure the project
+How to run the project locally
+Deployment
+Include instructions on how to deploy the project to a production environment, including:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Any necessary build steps (e.g. compiling TypeScript)
+How to deploy to Firebase hosting
+How to set up environment variables
+Contributing
+Include guidelines for contributing to the project, including:
 
-## Learn More
+How to set up the development environment
+Coding standards and conventions
+How to submit a pull request
+License
+Include the license that the project is released under.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Contact
+Include contact information for the maintainers of the project.
