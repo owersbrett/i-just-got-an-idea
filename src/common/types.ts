@@ -114,3 +114,15 @@ interface Entry {
     createdAt: Date;
   }
   
+
+  interface Project {
+    id: string;
+    name: string;
+    description: string;
+    startDate: Date;
+    endDate?: Date;
+    status: "planned" | "inProgress" | "completed";
+    owner: string;
+    teamMembers: string[];
+  }
+  
