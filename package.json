@@ -13,8 +13,10 @@
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
     "autoprefixer": "10.4.14",
+    "axios": "^1.4.0",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.1",
+    "express-rate-limit": "^6.7.0",
     "firebase": "^9.21.0",
     "next": "13.4.1",
     "postcss": "8.4.23",
@@ -25,6 +27,7 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
-    "@types/three": "^0.152.0"
+    "@types/three": "^0.152.0",
+    "@types/ws": "^8.5.4"
   }
 }
