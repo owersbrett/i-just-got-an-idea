@@ -1,128 +1,379 @@
-interface User {
-    id: string;
-    email: string;
-    name: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }
-  
-  interface Session {
-    id: string;
-    userId: string;
-    ideaId: string;
-    startTime: Date;
-    endTime: Date | null;
-    isActive: boolean;
-  }
-  
-  interface Idea {
-    id: string;
-    userId: string;
-    title: string;
-    description: string;
-    keywords: string[];
-    createdAt: Date;
-    updatedAt: Date;
-  }
-
-  interface Jargon {
-    id: string;
-    term: string;
-    definition: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }
-
-  interface Goal {
-    id: string;
-    ideaId: string;
-    title: string;
-    description: string;
-    status: 'not_started' | 'in_progress' | 'completed';
-    createdAt: Date;
-    updatedAt: Date;
-  }
-
-  interface Task {
-    id: string;
-    goalId: string;
-    title: string;
-    description: string;
-    status: 'not_started' | 'in_progress' | 'completed';
-    createdAt: Date;
-    updatedAt: Date;
-  }
-  
-  interface Notification {
-    id: string;
-    userId: string;
-    content: string;
-    type: 'informational' | 'warning' | 'error';
-    createdAt: Date;
-    read: boolean;
-  }
-  interface Objection {
-    id: string;
-    userId: string;
-    content: string;
-    status: 'open' | 'resolved';
-    createdAt: Date;
-    updatedAt: Date;
-  }
-
-  interface Trend {
-    id: string;
-    keyword: string;
-    result: string;
-    createdAt: Date;
-  }
-
-  interface Advertisement {
-    id: string;
-    userId: string;
-    content: string;
-    metadata: {
-      mediaUrl: string;
-      mediaType: string;
-    };
-    createdAt: Date;
-  }
-
-  interface Image {
-  id: string;
-  ideaId: string;
-  userId: string;
-  url: string;
-  createdAt: Date;
+import { v4 as uuidv4 } from "uuid";
+export interface QueryConstraints {
+  fieldPath: string;
+  filter: "<" | "<=" | "==" | "<" | "<=" | "!=";
+  value: any;
 }
 
-interface Entry {
-    id: string;
-    userId: string;
-    ideaId?: string;
-    goalId?: string;
-    taskState?: string;
-    type: "prompt" | "follow-up" | "idea" | "objection";
-    content: string;
-    createdAt: Date;
-  }
-  
-  interface Ask {
-    id: string;
-    userId: string;
-    content: string;
-    createdAt: Date;
-  }
-  
+export class User {
+  userId!: string;
+  email!: string;
+  name!: string;
+  createdAt!: Date;
+  updatedAt!: Date;
 
-  interface Project {
-    id: string;
-    name: string;
-    description: string;
-    startDate: Date;
-    endDate?: Date;
-    status: "planned" | "inProgress" | "completed";
-    owner: string;
-    teamMembers: string[];
+  public static new(name: string): User {
+    return {
+      userId: uuidv4(),
+      email: "owersbrett@gmail.com",
+      name: name,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as User;
   }
-  
+}
+export class Idea {
+  id!: string;
+  userId!: string;
+  ideaStatement!: string;
+  ideaStatementResponse!: string;
+  keywords!: string[];
+  createdAt!: Date;
+  updatedAt!: Date;
+  active!: boolean;
+}
+export class Notification {
+  notificationId!: string;
+  userId!: string;
+  ideaId!: string;
+  content!: string;
+  type!:
+    | "idea"
+    | "jargon"
+    | "user"
+    | "session"
+    | "trend"
+    | "goal"
+    | "objection"
+    | "task"
+    | "advertisement"
+    | "notification"
+    | "image"
+    | "destination"
+    | "entry"
+    | "ask"
+    | "cheer"
+    | "offering"
+    | "media"
+    | "environment"
+    | "informational";
+  createdAt!: Date;
+  read!: boolean;
+  public static new(
+    userId: string,
+    content: string,
+    type:
+      | "idea"
+      | "jargon"
+      | "user"
+      | "session"
+      | "trend"
+      | "goal"
+      | "objection"
+      | "task"
+      | "advertisement"
+      | "notification"
+      | "image"
+      | "destination"
+      | "entry"
+      | "ask"
+      | "cheer"
+      | "offering"
+      | "media"
+      | "environment"
+  ): Notification {
+    return {
+      notificationId: uuidv4(),
+      userId: userId,
+      content: content,
+      type: type,
+      createdAt: new Date(),
+      read: false,
+    } as Notification;
+  }
+}
+export class Environment {
+  environmentId!: string;
+  defaultTemplateConfigurationId!: string;
+
+  public static new(): Environment {
+    return {
+      environmentId: uuidv4(),
+      defaultTemplateConfigurationId: "1",
+
+    } as Environment;
+  }
+}
+export class TemplateConfiguration {
+  templateConfigurationId!: string;
+  userId!: string;
+  ideaId!: string;
+  currentTemplateIndex!: number;
+  templateIds!: string[];
+  createdAt!: Date;
+  updatedAt!: Date;
+
+  public static default(userId: string, ideaId: string): TemplateConfiguration {
+    return {
+      templateConfigurationId: uuidv4(),
+      userId: userId,
+      ideaId: ideaId,
+      currentTemplateIndex: 0,
+      templateIds: ["1", "11", "111", "1111", "11111", "111111", "1111111", "11111111", "111111111", "1111111111"],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as TemplateConfiguration;
+  }
+}
+
+export class Template {
+  templateId!: string;
+  body!: string;
+  public static new(): Template {
+    return {
+      templateId: uuidv4(),
+      body: "What is your idea?",
+    } as Template;
+  }
+}
+
+export class Prompt {
+  promptId!: string;
+  templateId!: string;
+  entryId!: string;
+  askId!: string;
+
+  body!: string;
+
+  public static new(templates: Template[], currentTemplateIndex: number, entry: Entry): Prompt {
+    const template = templates[currentTemplateIndex];
+    if (templates.length === currentTemplateIndex + 1) {
+    }
+    return {
+      promptId: uuidv4(),
+      templateId: template.templateId,
+      body: "What is your idea?",
+    } as Prompt;
+  }
+}
+
+export class Informational {
+  informationalId!: string;
+  templateId!: string;
+  entryId!: string;
+  askId!: string;
+
+  body!: string;
+
+  public static new(templates: Template[], currentTemplateIndex: number, entry: Entry): Informational {
+    const template = templates[currentTemplateIndex];
+    if (templates.length === currentTemplateIndex + 1) {
+    }
+    return {
+      informationalId: uuidv4(),
+      templateId: template.templateId,
+      body: "What is your idea?",
+    } as Informational;
+  }
+}
+
+interface Session {
+  id: string;
+  userId: string;
+  ideaId: string;
+  startTime: Date;
+  endTime: Date | null;
+  isActive: boolean;
+}
+
+export class Jargon {
+  jargonId!: string;
+  userId!: string;
+  ideaId!: string;
+  term!: string;
+  definition!: string;
+  createdAt!: Date;
+  updatedAt!: Date;
+  public static new(userId: string, ideaId: string, term: string, definition: string): Jargon {
+    return {
+      jargonId: uuidv4(),
+      userId: userId,
+      ideaId: ideaId,
+      term: term,
+      definition: definition,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as Jargon;
+  }
+}
+export class Cheer {
+  cheerId!: string;
+  userId!: string;
+  ideaId!: string;
+  content!: string;
+  createdAt!: Date;
+  updatedAt!: Date;
+  public static new(userId: string, ideaId: string, content: string): Cheer {
+    return {
+      cheerId: uuidv4(),
+      userId: userId,
+      ideaId: ideaId,
+      content: content,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as Cheer;
+  }
+}
+export class Objection {
+  objectionId!: string;
+  userId!: string;
+  ideaId!: string;
+  content!: string;
+  createdAt!: Date;
+  updatedAt!: Date;
+  public static new(userId: string, ideaId: string, content: string): Objection {
+    return {
+      objectionId: uuidv4(),
+      userId: userId,
+      ideaId: ideaId,
+      content: content,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as Objection;
+  }
+}
+export class Task {
+  taskId!: string;
+  userId!: string;
+  ideaId!: string;
+  content!: string;
+  createdAt!: Date;
+  updatedAt!: Date;
+  public static new(userId: string, ideaId: string, content: string): Task {
+    return {
+      taskId: uuidv4(),
+      userId: userId,
+      ideaId: ideaId,
+      content: content,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as Task;
+  }
+}
+
+export class Trend {
+  trendId!: string;
+  userId!: string;
+  ideaId!: string;
+  content!: string;
+  createdAt!: Date;
+  updatedAt!: Date;
+  public static new(userId: string, ideaId: string, content: string): Trend {
+    return {
+      trendId: uuidv4(),
+      userId: userId,
+      ideaId: ideaId,
+      content: content,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as Trend;
+  }
+}
+
+export class Goal {
+  goalId!: string;
+  userId!: string;
+  ideaId!: string;
+  content!: string;
+  createdAt!: Date;
+  updatedAt!: Date;
+  public static new(userId: string, ideaId: string, content: string): Goal {
+    return {
+      goalId: uuidv4(),
+      userId: userId,
+      ideaId: ideaId,
+      content: content,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as Goal;
+  }
+}
+export class Advertisement {
+  advertisementId!: string;
+  userId!: string;
+  ideaId!: string;
+  content!: string;
+  createdAt!: Date;
+  updatedAt!: Date;
+  public static new(userId: string, ideaId: string, content: string): Advertisement {
+    return {
+      advertisementId: uuidv4(),
+      userId: userId,
+      ideaId: ideaId,
+      content: content,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as Advertisement;
+  }
+}
+
+export class FollowUp {
+  followUpId!: string;
+  userId!: string;
+  ideaId!: string;
+  content!: string;
+  createdAt!: Date;
+  updatedAt!: Date;
+  public static new(userId: string, ideaId: string, content: string): FollowUp {
+    return {
+      followUpId: uuidv4(),
+      userId: userId,
+      ideaId: ideaId,
+      content: content,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as FollowUp;
+  }
+}
+
+export class Entry {
+  entryId!: string;
+  userId!: string;
+  ideaId!: string;
+  content!: string;
+  type!: "idea" | "follow-up" | "objection";
+  createdAt!: Date;
+  updatedAt!: Date;
+  public static new(userId: string, ideaId: string, content: string): Entry {
+    return {
+      entryId: uuidv4(),
+      userId: userId,
+      ideaId: ideaId,
+      content: content,
+      type: "idea",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as Entry;
+  }
+
+}
+
+
+export class Ask {
+  askId!: string;
+  userId!: string;
+  ideaId!: string;
+  content!: string;
+  createdAt!: Date;
+  updatedAt!: Date;
+  public static new(userId: string, ideaId: string, content: string): Ask {
+    return {
+      askId: uuidv4(),
+      userId: userId,
+      ideaId: ideaId,
+      content: content,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as Ask;
+  }
+}
