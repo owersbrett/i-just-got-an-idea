@@ -25,19 +25,37 @@ export class User {
 export class Idea {
   id!: string;
   userId!: string;
-  ideaStatement!: string;
-  ideaStatementResponse!: string;
+  ideaStatement: string | undefined;
+  ideaStatementResponse: string | undefined;
   keywords!: string[];
   createdAt!: Date;
   updatedAt!: Date;
   active!: boolean;
+
+  public static new(
+    userId: string,
+    ideaStatement: string,
+
+    keywords: string[]
+  ): Idea {
+    return {
+      id: uuidv4(),
+      userId: userId,
+      ideaStatement: ideaStatement,
+      ideaStatementResponse: undefined,
+      keywords: keywords,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      active: true,
+    } as Idea;
+  }
 }
 export class Notification {
   notificationId!: string;
   userId!: string;
-  ideaId!: string;
+  ideaId: string | undefined;
   content!: string;
-  type!:
+  notificationType!:
     | "idea"
     | "jargon"
     | "user"
@@ -86,7 +104,7 @@ export class Notification {
       notificationId: uuidv4(),
       userId: userId,
       content: content,
-      type: type,
+      notificationType: type,
       createdAt: new Date(),
       read: false,
     } as Notification;
@@ -339,12 +357,12 @@ export class FollowUp {
 export class Entry {
   entryId!: string;
   userId!: string;
-  ideaId!: string;
+  ideaId: string | undefined;
   content!: string;
   type!: "idea" | "follow-up" | "objection";
   createdAt!: Date;
   updatedAt!: Date;
-  public static new(userId: string, ideaId: string, content: string): Entry {
+  public static new(userId: string, ideaId: string | undefined, content: string): Entry {
     return {
       entryId: uuidv4(),
       userId: userId,

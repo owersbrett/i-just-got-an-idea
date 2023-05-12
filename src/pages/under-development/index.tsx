@@ -1,5 +1,5 @@
 'use client';
-import Placeholder from "@/components/Placeholder";
+import Placeholder from "@/components/PlaceholderComponent";
 import React from "react";
 
 const UnderDevelopment: React.FC = () => {

@@ -5,7 +5,7 @@ import { collection, getDocFromServer, getDocs } from "firebase/firestore";
 import { firestore } from '../../firebase/clientApp';
 
 export class UserRepository {
-    public static deleteAll() {
+    public static async deleteAll() {
         throw new Error('Method not implemented.');
     }
     public static collection = 'users';
