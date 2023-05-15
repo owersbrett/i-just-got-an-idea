@@ -41,17 +41,14 @@ const Placeholder: React.FC = () => {
   }, []);
 
   let getSize = () => {
-    let size = 10;
-    if (idea.length >= 101){
-      return .101;
-    } else {
-      size = 10 - (idea.length / 10);
-      if (size < .101){
-        return .101;
-      }
-      return size;
+    let baseSize = 2.5;
+    if (idea.length > 0){
+      baseSize = baseSize - idea.length / 10;
     }
-
+    if (baseSize < 0.333){
+      baseSize = 0.333;
+    }
+      return baseSize;
   }
 
   return (
@@ -59,14 +56,11 @@ const Placeholder: React.FC = () => {
       <Canvas>
         <IcosahedronComponent size={getSize()} />
       </Canvas>
-      <div style={{ position: 'fixed', top: '10px', left: '10px' }}>
-        <h1 style={{ color: 'white', textShadow: '2px 2px 4px #000000' }}>{helperText}</h1>
-      </div>
-      <div style={{ position: 'fixed', padding: '10px', bottom: '10px', color: 'white' }}>
 
+      <div style={{ position: 'fixed', padding: '10px', bottom: '10px', color: 'white' }}>
      
         <form className="terminal-input" onSubmit={handleIdeaSubmit}>
-          <span className="terminal-prompt">$</span>
+          <span className="terminal-prompt">i-just-got-an-idea$</span>
           <input
             type="text"
             className="terminal-text-input"

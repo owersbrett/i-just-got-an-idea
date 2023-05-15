@@ -1,15 +1,19 @@
 .terminal-input {
-    width: 100vw;
-    display: flex;
-    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     background-color: #000;
     padding: 8px;
     font-family: monospace;
+    white-space: nowrap;
   }
   
   .terminal-prompt {
     color: #00ff00;
-    margin-right: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
   .terminal-text-input {
@@ -20,6 +24,7 @@
     font-family: monospace;
     font-size: 14px;
     width: 100%;
+    overflow-wrap: break-word; /* Allows the input text to wrap to the next line */
   }
   
   .terminal-text-input:focus {
