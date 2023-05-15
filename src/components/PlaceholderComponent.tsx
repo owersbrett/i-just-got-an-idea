@@ -6,7 +6,7 @@ import { Canvas } from "react-three-fiber";
 const Placeholder: React.FC = () => {
   const [keyword, setKeyword] = useState('');
   const [idea, setIdea] = useState('');
-  const [helperText, setHelperText] = useState('I want to build a website that...');
+  const [helperText, setHelperText] = useState('I just got an idea...');
 
   const handleKeywordSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -22,13 +22,13 @@ const Placeholder: React.FC = () => {
 
   useEffect(() => {
     const helperTexts = [
-      'I want to build a website that accepts Ideas as input and processes them through AI with a list of custom prompts...',
-      'I want to build an app that sends Notifications to Users based on Topics they\'ve subscribed to...',
-      'I want to go to a coding bootcamp, and then get a job as a Software Engineer...',
-      'I want to program a phone number that allows people to text it to ask questions from the perspective of an ancient mystic named...',
-      'I want to create a website using three.js that allows users to create their own 3D models...',
-      'I want to store ideas and keywords to contextualize the AI generated responses...',
-      'I want to an app that will break up the Lord\'s prayer in his native tongue of Aramaic and transliterate it in push notifications...',
+      'I just got an idea...',
+      // 'I want to build an app that sends Notifications to Users based on Topics they\'ve subscribed to...',
+      // 'I want to go to a coding bootcamp, and then get a job as a Software Engineer...',
+      // 'I want to program a phone number that allows people to text it to ask questions from the perspective of an ancient mystic named...',
+      // 'I want to create a website using three.js that allows users to create their own 3D models...',
+      // 'I want to store ideas and keywords to contextualize the AI generated responses...',
+      // 'I want to an app that will break up the Lord\'s prayer in his native tongue of Aramaic and transliterate it in push notifications...',
     ];
 
     let currentTextIndex = 0;

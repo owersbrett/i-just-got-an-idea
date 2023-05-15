@@ -22,7 +22,7 @@ const Placeholder: React.FC = () => {
   return (
     <>
       <Canvas>
-        <IcosahedronComponent />
+        <IcosahedronComponent size={0} />
       </Canvas>
       <div style={{ position: 'fixed', top: '10px', left: '10px' }}>
         <h1 style={{ color: 'white', textShadow: '2px 2px 4px #000000' }}>I Just Got An Idea...</h1>

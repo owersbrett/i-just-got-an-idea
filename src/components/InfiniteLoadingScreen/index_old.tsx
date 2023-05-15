@@ -35,6 +35,7 @@ const InfiniteLoadingScreen = () => {
       const time = Date.now() * 0.001;
       const color = new THREE.Color();
       color.setHSL(time * 0.1 % 1, 0.5, 0.5);
+
       cube.material.color = color;
 
       renderer.render(cube.parent as THREE.Scene, camera);
