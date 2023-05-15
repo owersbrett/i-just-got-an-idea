@@ -1,0 +1,28 @@
+.terminal-input {
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    background-color: #000;
+    padding: 8px;
+    font-family: monospace;
+  }
+  
+  .terminal-prompt {
+    color: #00ff00;
+    margin-right: 8px;
+  }
+  
+  .terminal-text-input {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-family: monospace;
+    font-size: 14px;
+    width: 100%;
+  }
+  
+  .terminal-text-input:focus {
+    outline: none;
+  }
+  
