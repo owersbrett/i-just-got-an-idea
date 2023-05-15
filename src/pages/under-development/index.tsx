@@ -1,14 +1,17 @@
 'use client';
-import Placeholder from "@/components/PlaceholderComponent";
+import InfiniteLoadingScreen from "@/components/InfiniteLoadingScreen";
+// import Placeholder from "@/components/PlaceholderComponent";
 import React from "react";
 
 const UnderDevelopment: React.FC = () => {
   return (
   <>
-    <div>
-      <h1>I Just Had An Idea...</h1>
-      <Placeholder />
-    </div>
+
+      <div style={{ height: '100vh' }}>
+        <InfiniteLoadingScreen />
+      </div>
+
+
   </>
   );
 };
