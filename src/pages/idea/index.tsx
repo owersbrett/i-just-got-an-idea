@@ -45,13 +45,13 @@ const IdeaPage = (userId: string | undefined) => {
   const submitEntry = async (value: string) => {
     let entry: Entry;
     if (idea && user) {
-      entry = Entry.new(value, idea.id, value);
-      setEntry(entry);
+      // entry = Entry.new(value, idea.id, value);
+      // setEntry(entry);
     } else if (user) {
-      let newIdea = Idea.new(user.userId, value, keywords);
-      await IdeaRepository.create(newIdea);
-      entry = Entry.new(value, newIdea.id, value);
-      setEntry(entry);
+      // let newIdea = Idea.new(user.userId, value, keywords);
+      // await IdeaRepository.create(newIdea);
+      // entry = Entry.new(value, newIdea.id, value);
+      // setEntry(entry);
     }
 
 

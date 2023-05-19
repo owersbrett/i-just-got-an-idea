@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { IcosahedronGeometry } from 'three';
 
-interface IcosahedronComponentProps {
+interface OctohedronComponentProps {
     size: number;
 }
-const IcosahedronComponent = (props: IcosahedronComponentProps) => {
+const OctohedronComponent = (props: OctohedronComponentProps) => {
   const mesh = useRef<THREE.Mesh>(null!);
   const [color, setColor] = useState('red');
 
@@ -32,11 +31,11 @@ const IcosahedronComponent = (props: IcosahedronComponentProps) => {
   });
 
   return (
-    <mesh ref={mesh} scale={props.size}>
-      <icosahedronGeometry args={[1, 0]} />
+    <mesh ref={mesh} scale={props.size} >
+      <octahedronGeometry args={[1, 0]}  />
       <meshBasicMaterial color={color} wireframe />
     </mesh>
   );
 };
 
-export default IcosahedronComponent;
+export default OctohedronComponent;

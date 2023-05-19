@@ -1,9 +1,8 @@
 import '../styles/TerminalInput.css'; // Import the CSS file
 import React, { useState, useEffect, useRef } from "react";
 import { Canvas } from "react-three-fiber";
-import IcosahedronComponent from './PlatonicSolids/Icosahedron';
 
-const Placeholder: React.FC = () => {
+const Terminal: React.FC = () => {
   const [keyword, setKeyword] = useState('');
   const [idea, setIdea] = useState('');
   const [helperText, setHelperText] = useState('I just got an idea...');
@@ -75,36 +74,11 @@ const Placeholder: React.FC = () => {
   }
   return (
     <>
-      <nav className='bg-white navbar vh-10 shadow'>
-        <Canvas onClick={() => {
-          console.log("what")
-          return inputRef.current?.focus();
-        }}>
-          <IcosahedronComponent size={2} />
-        </Canvas>
-
-      </nav>
-
-      <div style={{ position: 'fixed', padding: '10px',  color: 'white' }}>
      
-        <form className="terminal-input" onSubmit={handleIdeaSubmit}>
-          <div>
-
-          <textarea
-            className="terminal-text-input"
-            value={idea}
-            prefix='i-just-got-an-idea$ '
-            onChange={(e)=>setIdea(e.target.value)}
-            autoFocus
-          />
-          </div>
-        </form>
-      </div>
-
 
 
     </>
   );
 };
 
-export default Placeholder;
+export default Terminal;

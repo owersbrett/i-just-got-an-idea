@@ -9,7 +9,14 @@ export class NotificationRepository {
     public static notificationsCollection = collection(firestore, NotificationRepository.collection);
     public static notificationDocument = (documentId: string) => doc(firestore, NotificationRepository.collection, documentId);
 
-    
+
+    public static async update(userId: string, notificationId: string, data: any): Promise<Notification> {
+        const document = NotificationRepository.notificationDocument(notificationId);
+        await setDoc(document, data);
+        let notification =  await NotificationRepository.findById(notificationId);
+        if (!notification) notification =  Notification.new(userId, "Error updating notification", "error");
+        return notification;
+    }
     public static async create(notification: Notification): Promise<Notification> {
         const document = NotificationRepository.notificationDocument(notification.notificationId);
         await setDoc(document, notification);

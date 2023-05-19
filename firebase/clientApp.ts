@@ -1,7 +1,9 @@
 import {initializeApp} from "firebase/app";
 import {getFirestore} from "firebase/firestore";
+import {getAuth} from "firebase/auth";
 
-initializeApp( {
+console.log(process.env.IJGAI_FIREBASE_API_KEY);
+let firebaseApp = initializeApp( {
     apiKey:process.env.IJGAI_FIREBASE_API_KEY,
     authDomain:process.env.IJGAI_FIREBASE_AUTH_DOMAIN,
     projectId:process.env.IJGAI_FIREBASE_PROJECT_ID,
@@ -11,5 +13,5 @@ initializeApp( {
     measurementId:process.env.IJGAI_FIREBASE_MEASUREMENT_ID
  });
  const firestore = getFirestore();
-
- export {firestore};
+    const auth = getAuth(firebaseApp);
+ export {firestore, auth};

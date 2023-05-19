@@ -7,15 +7,28 @@ export interface QueryConstraints {
 
 export class User {
   userId!: string;
-  email!: string;
+  email!: string ;
+  phoneNumber!: string;
   name!: string;
   createdAt!: Date;
   updatedAt!: Date;
 
+  isAnonymous(): boolean {
+    return this.userId === "anonymous";
+  }
+  public static anonymous(): User {
+    return {
+      userId: "anonymous",
+      email: "anonymous",
+      name: "anonymous",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as User;
+  }
   public static new(name: string): User {
     return {
       userId: uuidv4(),
-      email: "owersbrett@gmail.com",
+      email: "",
       name: name,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -23,7 +36,7 @@ export class User {
   }
 }
 export class Idea {
-  id!: string;
+  ideaId!: string;
   userId!: string;
   ideaStatement: string | undefined;
   ideaStatementResponse: string | undefined;
@@ -32,14 +45,29 @@ export class Idea {
   updatedAt!: Date;
   active!: boolean;
 
+  public static idea(){
+    return {
+      ideaId: "idea",
+      userId: "anonymous",
+    
+      ideaStatementResponse: "That's a great idea! You'll probably want to choose a framework. Or I could pick, something like Next.js or Angular. Is there one you would prefer?",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      active: true,
+    } as Idea;
+  }
+
+  isEmpty(): boolean {
+    return this.ideaStatement === "";
+  }
+
   public static new(
     userId: string,
     ideaStatement: string,
-
     keywords: string[]
   ): Idea {
     return {
-      id: uuidv4(),
+      ideaId: uuidv4(),
       userId: userId,
       ideaStatement: ideaStatement,
       ideaStatementResponse: undefined,
@@ -72,6 +100,7 @@ export class Notification {
     | "ask"
     | "cheer"
     | "offering"
+    | "error"
     | "media"
     | "environment"
     | "informational";
@@ -87,6 +116,7 @@ export class Notification {
       | "session"
       | "trend"
       | "goal"
+      | "error"
       | "objection"
       | "task"
       | "advertisement"
@@ -359,7 +389,8 @@ export class Entry {
   userId!: string;
   ideaId: string | undefined;
   content!: string;
-  type!: "idea" | "follow-up" | "objection";
+  intent!: "auth" | "prompt" | "objection"
+  type!: "idea" | "follow-up"  | "phone"  | "email";
   createdAt!: Date;
   updatedAt!: Date;
   public static new(userId: string, ideaId: string | undefined, content: string): Entry {
@@ -368,7 +399,20 @@ export class Entry {
       userId: userId,
       ideaId: ideaId,
       content: content,
+      intent: "prompt",
       type: "idea",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as Entry;
+  }
+  public static auth( content: string, type: "phone" | "email"): Entry {
+    return {
+      entryId: uuidv4(),
+      userId: "anonymous",
+      ideaId: undefined,
+      content: content,
+      intent: "auth",
+      type: type,
       createdAt: new Date(),
       updatedAt: new Date(),
     } as Entry;
