@@ -4,17 +4,29 @@ import { API } from "@/pages/api/api";
 import authRepository from "@/repository/authRepository";
 import axios from "axios";
 import { User } from "firebase/auth";
+import { v4 } from "uuid";
 
 export class TerminalRunner {
   public inputs: string[];
-  public userId: string;
+
+  public uid: string;
+  public sessionId: string;
+
+  getEntryType = (): | "entry" | "idea" => {
+    if (this.previousInput === "idea") {
+      return "idea";
+    }
+    return "entry";
+  }
+
   public ideaId: string;
   public previousInput: string;
   public currentInput: string;
   public keywords: string[] = [];
   constructor() {
     this.inputs = [];
-    this.userId = "";
+    this.uid = "";
+    this.sessionId = "";
     this.ideaId = "";
     this.currentInput = "";
     this.previousInput = "";
@@ -24,25 +36,29 @@ export class TerminalRunner {
   };
   defaultFunction = () => {
     console.log("Default function called from TerminalRunner with input: ", this.currentInput);
-    return { message: "No function found" };
+    return { message: "" };
   };
 
-  ideaCommand = () => {
-    const idea = Idea.new(this.userId, this.currentInput, this.keywords);
-  };
-  keywordCommand = () => {
-    this.keywords = this.currentInput.split(" ");
-  };
   logoutCommand = () => {
     authRepository.signOut();
   };
-  loginCommand = () => {
-    console.log("TODO extract login logic from ~/home-page/index.tsx")
-  };
+
+
 
   createEntry = () => {
+    const entry: Entry = {
+      sessionId: this.sessionId,
+      entryId: v4(),
+      uid: this.uid,
+      ideaId: this.ideaId,
+      content: this.currentInput,
+      intent: "default",
+      type: this.getEntryType(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      keywords: this.keywords
+    } ;
     console.log("Creating entry");
-    const entry = Entry.default(this.currentInput, this.userId, this.ideaId);
     console.log(entry);
     axios
       .post("/api/entries", entry)
@@ -50,14 +66,14 @@ export class TerminalRunner {
         console.log("Response from createEntry: ", response);
       })
       .catch((error) => {
-        console.log("Error from createEntry: ", error);
+        console.error("Error from createEntry: ", error);
       });
-  }
+  };
 
   run = async (user: User | null, defaultFunction: Function, input: string) => {
     try {
       if (user) {
-        this.userId = user.uid;
+        this.uid = user.uid;
       }
       if (this.previousInput.length > 0) {
         this.previousInput = input.trim();
@@ -66,37 +82,22 @@ export class TerminalRunner {
       } else {
         if (input.length > 0) {
           this.inputs.push(input);
+          this.previousInput = this.currentInput;
           this.currentInput = input;
-          let specialFunction = null;
-
           switch (this.currentInput) {
             case "logout":
-              specialFunction = this.logoutCommand;
-              break;
-            case "login":
-              specialFunction = this.loginCommand;
-              break;
-            case "idea":
-              specialFunction = this.ideaCommand;
-              break;
-            case "keywords":
-              specialFunction = this.keywordCommand;
-              break;
+              return this.logoutCommand();
             default:
               break;
           }
-          if (specialFunction) {
-            specialFunction();
-          } else {
-            this.defaultFunction();
-          }
+          this.defaultFunction();
         } else {
-          API.postError(this.userId, "No input provided");
+          API.postError(this.uid, "No input provided");
         }
       }
       this.createEntry();
     } catch (e) {
-      API.postError(this.userId, "Error running terminal command");
+      API.postError(this.uid, "Error running terminal command");
     }
   };
 

@@ -12,7 +12,7 @@ export class NotificationRepository {
 
   public static async update(uid: string, notificationId: string, data: any): Promise<Notification> {
     const document = NotificationRepository.notificationDocument(notificationId);
-    await setDoc(document, data);
+    await updateDoc(document, data);
     let notification = await NotificationRepository.findById(notificationId);
     if (!notification) notification = Notification.new(uid, "Error updating notification", "error");
     return notification;

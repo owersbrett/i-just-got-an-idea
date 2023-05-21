@@ -21,13 +21,13 @@ const DismissableNotification: React.FC<DismissableNotificationStackProps> = ({ 
     if (dismissed) {
         return <></>
     }
-    const classes = "item p-4 mb-4 flex flex-row  justify-between items-center rounded-lg " + NotificationUtility.getNotificationClassNamesFromNotificationLevel(notification.level);
-    console.log(classes);
+    const classes = "item p-4 mb-4 flex flex-row  justify-between items-center rounded-lg bg-yellow-500 " + NotificationUtility.getNotificationClassNamesFromNotificationLevel(notification.level);
+
     return (
 
 
         <div
-            className="container flex flex-col"
+            className="container flex flex-col text-lg font-bold "
             key={notification.notificationId}
             style={{ transition: "opacity 0.3s" }}
         >
@@ -42,7 +42,10 @@ const DismissableNotification: React.FC<DismissableNotificationStackProps> = ({ 
                     </div>
 
                 </div>
-                {notification.content}
+                <p >
+
+                    {notification.content.length > 33 ? notification.content.substring(0, 33) + "..." : notification.content}
+                </p>
                 <button
                     className="close-btn"
                     onClick={() => {

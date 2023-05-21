@@ -16,16 +16,11 @@ export class EntryRepository {
     
     public static async create(entry: Entry): Promise<Entry> {
         try {
-            console.log("Creating");
             const document = EntryRepository.notificationDocument(entry.entryId);
-            console.log("Preparing to set doc: "+ document)
-            console.log("With entry: "+ entry)
             let response = await setDoc(document, entry);
-            console.log("Successfully created entry: " + response)
             return entry;
         } catch (e){
-            console.log(e);
-            console.log("ENTRYREPOSITORY")
+            console.error(e);
             throw new Error("Error creating entry");
         }
     }

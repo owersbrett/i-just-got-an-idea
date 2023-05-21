@@ -1,19 +1,28 @@
+
 import { useEffect, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { IcosahedronGeometry } from 'three';
+import THREE, { IcosahedronGeometry } from 'three';
+import { PlatonicSolidsProps } from './PlatonicSolid';
+const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
 
-interface IcosahedronComponentProps {
-    size: number;
-}
-const IcosahedronComponent = (props: IcosahedronComponentProps) => {
-  const mesh = useRef<THREE.Mesh>(null!);
+
+const IcosahedronComponent: React.FC<PlatonicSolidsProps> = (props) => {
+  const boxRef = useRef<THREE.Mesh>(null!);
+  const [isHovered, setHovered] = useState(false);
+
   const [color, setColor] = useState('red');
 
+  function getRandomIndex(list: any[]): number {
+    const length = list.length;
+    const randomIndex = Math.floor(Math.random() * length);
+    return randomIndex;
+  }
 
   // Change color every second
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`);
+
+      setColor(colors[getRandomIndex(colors)]);
     }, 1000);
     return () => clearInterval(intervalId);
   }, []);
@@ -21,20 +30,26 @@ const IcosahedronComponent = (props: IcosahedronComponentProps) => {
 
 
   useEffect(() => {
-    mesh.current.rotation.x = mesh.current.rotation.y = 0.5;
-  }, []);
 
+    boxRef.current.rotation.x = boxRef.current.rotation.y = 0.5;
+  }, []);
+  const getScale = () => props.selected ? 2.2 : isHovered ? 2 : 1.5;
   useFrame(() => {
-    if (mesh.current) {
-      mesh.current.rotation.x += 0.01;
-      mesh.current.rotation.y += 0.01;
+    if (boxRef.current) {
+      boxRef.current.scale.set(getScale(), getScale(), getScale());
+
+      boxRef.current.rotation.x += 0.01;
+      boxRef.current.rotation.y += 0.01;
     }
   });
+  const handlePointerOver = () => setHovered(true);
+  const handlePointerOut = () => setHovered(false);
+  // const isTransparent = () => ;
 
   return (
-    <mesh ref={mesh} scale={props.size} >
-      <icosahedronGeometry args={[1, 0]}  />
-      <meshBasicMaterial color={color} wireframe transparent opacity={.50} />
+    <mesh ref={boxRef} onPointerOver={handlePointerOver} onPointerOut={handlePointerOut}  >
+      <icosahedronGeometry args={[1, 0]} />
+      <meshBasicMaterial color={ color}  wireframe={!props.selected}/>
     </mesh>
   );
 };

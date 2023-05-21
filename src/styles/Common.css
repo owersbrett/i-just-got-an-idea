@@ -27,3 +27,8 @@
 .vw-100 {
   width: 100vw;
 }
+
+
+.fall-through{
+  pointer-events: none;
+}

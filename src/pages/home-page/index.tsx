@@ -8,29 +8,73 @@ import { Notification } from "@/common/types/notification";
 import "../../styles/Common.css";
 import "../../styles/TerminalInput.css";
 
-import RevolvingIdeaAnimation from "../../components/Idea/RevolvingIdeas";
+import RevolvingIdeaAnimation from "../../components/Idea/RevolvingIdeaAnimation";
 import { UserContext } from "../auth-page/UserContext";
 import { EntryParser } from "@/common/entryParser";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { AxiosResponse } from "axios";
 import authRepository from "@/repository/authRepository";
 import { ConfirmationResult, RecaptchaVerifier } from "firebase/auth";
 import { auth } from "../../../firebase/clientApp";
 import { UserRepository } from "@/repository/userRepository";
 import DismissableNotificationStack from "@/components/DismissableNotificationStack";
-import { API } from "../api/api";
+import { API, SuccessCallback, ErrorCallback } from "../api/api";
 import { TerminalRunner } from "@/utils/terminal_runner";
+import { SessionContext } from "../auth-page/SessionContext";
 const HomePage: React.FC = () => {
     const [terminalRunner, setTerminalRunner] = useState<TerminalRunner>(new TerminalRunner());
     const { user } = useContext(UserContext);
+    const { session } = useContext(SessionContext);
     const [terminalValue, setTerminalValue] = useState('');
     const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(null);
 
     const [keywords, setKeywords] = useState([] as string[]);
     const [ideas, setIdeas] = useState([] as Idea[]);
-    const [idea, setIdea] = useState(Idea.new('', '', [] as string[]));
+    const [idea, setIdea] = useState(Idea.new('', '', [] as string[], 0));
     const [notifications, setNotifications] = useState([] as Notification[]);
     const [helperText, setHelperText] = useState('I just got an idea...');
+
+    const parseIdeas: SuccessCallback = (response: AxiosResponse<any>) => {
+        try {
+            console.log("parsing ideas")
+            console.log("ideasLength: " + ideas.length);
+
+            if (response.data) {
+                let currentIdeas = response.data.ideas as Idea[];
+                if (currentIdeas.length != ideas.length) {
+                    console.log("ideasLength:" + ideas.length)
+                    console.log("currentIdeas length:" + currentIdeas.length)
+                    console.log("setting ideas")
+                    setIdeas(currentIdeas);
+                    console.log(ideas.length)
+                    console.log(currentIdeas.length)
+
+                }
+            }
+        } catch (e) {
+            console.error(e)
+        }
+    }
+    const parseIdeasFailed: ErrorCallback = (response: AxiosError<any>) => {
+        console.error(response);
+        if (user) {
+            API.postError(user.uid, "Error parsing ideas")
+        }
+    }
+
+    const pollIdeas = (uid: string) => {
+        console.log("polling ideas");
+        const pollingEndpoint = `/api/ideas?uid=${uid}`
+        API.setPoll(pollingEndpoint, parseIdeas, parseIdeasFailed, 10000)
+
+    }
+
+    const fetchIdeas = (uid: string) => {
+        const pollingEndpoint = `/api/ideas?uid=${uid}`
+        API.get(pollingEndpoint, "Error getting ideas: ").then(parseIdeas, parseIdeasFailed);
+
+    }
+
 
     const handleKeywordSubmit = (keywordList: string[]) => {
         setKeywords(keywordList);
@@ -45,9 +89,14 @@ const HomePage: React.FC = () => {
         let terminal = terminalValue;
         terminalRunner.addInput(terminal);
         setTerminalRunner(terminalRunner);
-        setTerminalValue(terminal + '\n');
+        setTerminalValue("");
+        // if (terminalRunner.previousInput === "idea"){
+        // } else {
+        //     setTerminalValue(terminal + '\n');
+        // }
+        console.log("user: " + user?.uid)
         if (user) {
-            terminalRunner.run(user, () => { console.log(terminal) }, terminal);
+            terminalRunner.run(user, () => { console.log("Terminal content: \n" + terminal) }, terminal);
         } else {
             authenticate(terminal);
         }
@@ -58,11 +107,11 @@ const HomePage: React.FC = () => {
 
     useEffect(() => {
         if (user) {
-            console.log("User is logged in: " + user.uid);
-
-        } else {
-            console.log("No user found");
+            terminalRunner.sessionId = session.sessionId;
+            fetchIdeas(user.uid);
+            pollIdeas(user.uid);
         }
+
     }, [user]);
 
     const I_JUST_GOT_AN_IDEA = 'i-just-got-an-idea$ ';
@@ -74,8 +123,6 @@ const HomePage: React.FC = () => {
     }
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        console.log("keydown")
-        console.log(e.key);
         if (e.key === 'Enter') {
             e.preventDefault();
             handleEntrySubmitEvent(e);
@@ -84,7 +131,6 @@ const HomePage: React.FC = () => {
 
     const authenticate = async (input: string) => {
         if (!confirmation) {
-            console.log("Verifying phone number: " + input);
             let phoneNumberValid = EntryParser.isPhoneNumberValid(input);
             if (phoneNumberValid) {
                 await verifyRecaptcha(input);
@@ -93,7 +139,6 @@ const HomePage: React.FC = () => {
                 console.error("Invalid phone number. this should create a notification");
             }
         } else {
-            console.log("Verifying sms code: " + input);
             let userCredential = await authRepository.signIn(confirmation, input);
             UserRepository.getAndOrCreateUser(userCredential);
         }
@@ -108,9 +153,7 @@ const HomePage: React.FC = () => {
             const recaptchaVerifier = new RecaptchaVerifier(recaptchaContainer, {
                 size: 'normal', // Use 'compact' for a smaller widget
                 callback: async (_: any) => {
-                    console.log(phoneNumber);
                     let confirmation = await authRepository.sendPhoneNumberAuthCode(phoneNumber, recaptchaVerifier);
-                    console.log(confirmation);
                     setConfirmation(confirmation);
                     resolve(confirmation);
                 },
@@ -126,7 +169,7 @@ const HomePage: React.FC = () => {
     return (
         <div className="container z-1">
             <div className="vw-100">
-                <RevolvingIdeaAnimation ideas={ideas} />
+                <RevolvingIdeaAnimation key={"revolvingIdeaAnimation"} ideas={ideas} />
             </div>
 
 
@@ -149,7 +192,7 @@ const HomePage: React.FC = () => {
 
                 </div>
             </div>
-            <div className="absolute bottom-0 right-0 z-0">
+            <div className="absolute bottom-0 right-0 z-0 fall-through">
                 <DismissableNotificationStack initialNotifications={notifications} />
             </div>
 

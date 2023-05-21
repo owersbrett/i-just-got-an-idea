@@ -14,7 +14,7 @@ export class EntryParser{
 
 
 
-    public static parseEntry(uid: string, ideaId: string, entryValue: string): Entry{  
+    public static parseEntry(uid: string, ideaId: string, entryValue: string, sessionId: string): Entry{  
         let parsedEntry: Entry = {
             entryId: v4(),
             uid: uid,
@@ -23,7 +23,9 @@ export class EntryParser{
             intent: "auth",
             type: "idea",
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            sessionId: sessionId,
+            keywords: []
         };
         if (parsedEntry.content.startsWith("+")){
             if (EntryParser.isPhoneNumberValid(parsedEntry.content)){

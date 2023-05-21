@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import { v4 } from "uuid";
 
 export class Idea {
     index!: number;
@@ -35,7 +35,7 @@ export class Idea {
       index: number
     ): Idea {
       return {
-        ideaId: uuidv4(),
+        ideaId: v4(),
         uid: uid,
         idea: idea,
         keywords: keywords,

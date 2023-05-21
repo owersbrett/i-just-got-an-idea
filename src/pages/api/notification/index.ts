@@ -11,7 +11,6 @@ const limiter = rateLimit({
 }); // limit each IP to 10 requests per windowMs
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    console.log("Handle this");
   try {
     let notifications: Notification[] = [];
     if (req.body) {

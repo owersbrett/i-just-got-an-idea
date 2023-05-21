@@ -40,7 +40,7 @@ const authRepository: AuthRepository = {
             return await signInWithPhoneNumber(auth, phoneNumber, captcha);
         }
         catch (e){
-            console.log(e)
+            console.error(e)
             throw new Error("Error sending auth code");
         }
     },
@@ -50,7 +50,7 @@ const authRepository: AuthRepository = {
             console.log("Signing out...")
             await signOut(auth);
         } catch (error) {
-            console.log("Sign out error: ", error)
+            console.error("Sign out error: ", error)
         }
     },
     onAuthStateChanged: function (callback: (user: User | null) => void): void {

@@ -5,13 +5,14 @@ import IcosahedronComponent from './Icosahedron';
 import OctohedronComponent from './Octahedron';
 import { Sphere, Tetrahedron } from '@react-three/drei';
 
-interface PlatonicSolidsProps {
+export interface PlatonicSolidsProps {
   shape: 'Cube' | 'Dodecahedron' | 'Icosahedron' | 'Octahedron' | 'Sphere' | 'Tetrahedron';
+  selected: boolean;
 }
 
-const PlatonicSolids: React.FC<PlatonicSolidsProps> = ({ shape }) => {
+const PlatonicSolids: React.FC<PlatonicSolidsProps> = (props) => {
   const renderShape = () => {
-    switch (shape) {
+    switch (props.shape) {
       case 'Cube':
         return (
             <Cube size={0} />
@@ -22,7 +23,7 @@ const PlatonicSolids: React.FC<PlatonicSolidsProps> = ({ shape }) => {
         );
       case 'Icosahedron':
         return (
-            <IcosahedronComponent size={0} />
+            <IcosahedronComponent shape={'Icosahedron'} selected={props.selected}  />
         );
       case 'Octahedron':
         return (

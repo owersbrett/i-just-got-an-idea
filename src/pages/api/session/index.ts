@@ -2,21 +2,21 @@ import { NotificationRepository } from "@/repository/notificationRepository";
 import { rateLimit } from "express-rate-limit";
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
-import { QueryConstraints } from "@/common/types";
-import { Notification } from "@/common/types/notification";
-import { Timestamp, where } from "firebase/firestore";
+
+import { SessionRepository } from "@/repository/sessionRepository";
+import { Session } from "@/common/types/session";
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 min
   max: 10,
 }); // limit each IP to 10 requests per windowMs
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+    console.log("Handling sessionId")
   try {
     if (req.body) {
-      let notificationId = req.query.notificationId as string;
-      let userId = req.query.userId as string;
+      let body = req.body as Session;
 
-      await NotificationRepository.update(userId, notificationId, { read: true, dismissed: true });
+      await SessionRepository.upsert(body);
     } else {
       throw Error("No body");
     }
