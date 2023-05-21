@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from "uuid";
 export class Notification {
   notificationId!: string;
   uid!: string;
+  level!: | "info" | "warning" | "error" | "success";
+
   ideaId: string | undefined;
   content!: string;
   notificationType!:
@@ -28,6 +30,7 @@ export class Notification {
     | "informational";
   createdAt!: Date;
   read!: boolean;
+  dismissed!: boolean;
   public static new(
     uid: string,
     content: string,
@@ -59,6 +62,8 @@ export class Notification {
       notificationType: type,
       createdAt: new Date(),
       read: false,
+      level: "info",
+      dismissed : false
     } as Notification;
   }
 }

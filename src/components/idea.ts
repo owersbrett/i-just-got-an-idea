@@ -1,4 +1,4 @@
-import { Idea } from "@/common/types";
+import { Idea } from "@/common/types/idea";
 import { IdeaRepository } from "@/repository/ideaRepository";
 import { NotificationRepository } from "@/repository/notificationRepository";
 import { UserRepository } from "@/repository/userRepository";

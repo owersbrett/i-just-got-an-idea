@@ -1,8 +1,9 @@
 import { NotificationRepository } from "@/repository/notificationRepository";
-import axios from "axios";
 import { rateLimit } from "express-rate-limit";
+import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Notification, QueryConstraints } from "@/common/types";
+import { QueryConstraints } from "@/common/types";
+import { Notification } from "@/common/types/notification";
 import { Timestamp, where } from "firebase/firestore";
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 min
@@ -19,7 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       await NotificationRepository.update(userId, notificationId, { read: true });
     } else {
-      throw Error("No body")
+      throw Error("No body");
     }
 
     return limiter(req, res, () => {

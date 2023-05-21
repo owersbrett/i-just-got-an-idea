@@ -2,7 +2,9 @@
 // import Placeholder from "@/components/PlaceholderComponent";
 import React, { useContext, useEffect, useRef, useState } from "react";
 
-import { Entry, Idea, Notification } from "@/common/types";
+import { Idea } from "@/common/types/idea";
+import { Entry } from "@/common/types/entry";
+import { Notification } from "@/common/types/notification";
 import "../../styles/Common.css";
 import "../../styles/TerminalInput.css";
 
@@ -17,7 +19,9 @@ import { auth } from "../../../firebase/clientApp";
 import { UserRepository } from "@/repository/userRepository";
 import DismissableNotificationStack from "@/components/DismissableNotificationStack";
 import { API } from "../api/api";
+import { TerminalRunner } from "@/utils/terminal_runner";
 const HomePage: React.FC = () => {
+    const [terminalRunner, setTerminalRunner] = useState<TerminalRunner>(new TerminalRunner());
     const { user } = useContext(UserContext);
     const [terminalValue, setTerminalValue] = useState('');
     const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(null);
@@ -39,51 +43,18 @@ const HomePage: React.FC = () => {
     const handleEntrySubmitEvent = async (event: React.FormEvent) => {
         event.preventDefault();
         let terminal = terminalValue;
-        setTerminalValue('');
-
-
-        if (terminalValue.length > 0) {
-            if (user) {
-                if (terminal.startsWith("logout")) {
-                    authRepository.signOut();
-                } else if (!idea.ideaStatement && idea.ideaStatement!.length > 0) {
-                    console.log("We don't have idea statement")
-                    let newIdea = Idea.new(user.uid, terminal, keywords);
-                    let newEntry = EntryParser.parseEntry(user.uid, newIdea.ideaId, terminal);
-                    let entryResponse = API.post(`/api/entries`, newEntry, "Error creating entry: ");
-                    let ideaResponse = API.post(`/api/ideas`, newIdea, "Error creating idea: ");
-                    console.log(entryResponse);
-                    console.log(ideaResponse);
-                    setIdea(newIdea)
-                } else {
-                    let newEntry = EntryParser.parseEntry(user.uid, idea.ideaId, terminal);
-                    let entryResponse = await API.post(`/api/entries`, newEntry, "Error creating entry: ");
-                    console.log(entryResponse);
-                }
-
-            } else {
-                let phoneNumber = terminal;
-                console.log("Verifying phone number: " + phoneNumber);
-                if (confirmation) {
-                    console.log("We are confirmed!")
-                    let userCredential = await authRepository.signIn(confirmation, terminal);
-                    UserRepository.getAndOrCreateUser(userCredential);
-                } else {
-                    let phoneNumberValid = EntryParser.isPhoneNumberValid(phoneNumber);
-                    if (phoneNumberValid) {
-                        await verifyRecaptcha(phoneNumber);
-                    } else {
-                        console.log("Invalid phone number. this should create a notification")
-                    }
-                }
-
-
-            }
-
+        terminalRunner.addInput(terminal);
+        setTerminalRunner(terminalRunner);
+        setTerminalValue(terminal + '\n');
+        if (user) {
+            terminalRunner.run(user, () => { console.log(terminal) }, terminal);
+        } else {
+            authenticate(terminal);
         }
+
     };
 
-    
+
 
     useEffect(() => {
         if (user) {
@@ -111,6 +82,22 @@ const HomePage: React.FC = () => {
         }
     }
 
+    const authenticate = async (input: string) => {
+        if (!confirmation) {
+            console.log("Verifying phone number: " + input);
+            let phoneNumberValid = EntryParser.isPhoneNumberValid(input);
+            if (phoneNumberValid) {
+                await verifyRecaptcha(input);
+            } else {
+                API.postError("Invalid phone number. Please try again.", "session");
+                console.error("Invalid phone number. this should create a notification");
+            }
+        } else {
+            console.log("Verifying sms code: " + input);
+            let userCredential = await authRepository.signIn(confirmation, input);
+            UserRepository.getAndOrCreateUser(userCredential);
+        }
+    }
 
 
 
@@ -125,9 +112,9 @@ const HomePage: React.FC = () => {
                     let confirmation = await authRepository.sendPhoneNumberAuthCode(phoneNumber, recaptchaVerifier);
                     console.log(confirmation);
                     setConfirmation(confirmation);
+                    resolve(confirmation);
                 },
                 'expired-callback': () => {
-                    // Verification expired or failed
                     reject(new Error('reCAPTCHA verification expired'));
                 },
             }, auth);

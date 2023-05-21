@@ -1,7 +1,11 @@
+import { Notification } from "../common/types/notification"
+
 import React, { useState } from "react";
-import { Notification } from "../common/types";
 import '../styles/Common.css';
 import axios from "axios";
+import ToastIcon from "./ToastIcon";
+import { NotificationUtility } from "@/utils/NotificationUtility";
+
 
 interface DismissableNotificationStackProps {
     notification: Notification;
@@ -10,30 +14,39 @@ interface DismissableNotificationStackProps {
     actions: [(notification: Notification) => void];
 }
 
-const DismissableNotification: React.FC<DismissableNotificationStackProps> = ({ notification, onClick, onClose, actions }) => {
-    const [read, setRead] = useState(notification.read);
 
-    if (read){
+const DismissableNotification: React.FC<DismissableNotificationStackProps> = ({ notification, onClick, onClose, actions }) => {
+    const [dismissed, setDismissed] = useState(notification.dismissed);
+
+    if (dismissed) {
         return <></>
     }
-
+    const classes = "item p-4 mb-4 flex flex-row  justify-between items-center rounded-lg " + NotificationUtility.getNotificationClassNamesFromNotificationLevel(notification.level);
+    console.log(classes);
     return (
-        
+
 
         <div
             className="container flex flex-col"
             key={notification.notificationId}
             style={{ transition: "opacity 0.3s" }}
         >
-            <div className="item bg-yellow-500 p-4 mb-4 flex flex-row justify-between" onClick={() => {
+            <div className={classes} onClick={() => {
                 actions[0](notification);
                 return onClick(notification);
             }}>
+
+                <div >
+                    <div className="p-2">
+                        <ToastIcon type={notification.level} />
+                    </div>
+
+                </div>
                 {notification.content}
                 <button
                     className="close-btn"
                     onClick={() => {
-                        setRead(true);
+                        setDismissed(true);
                         return onClose(notification);
                     }}
                 >

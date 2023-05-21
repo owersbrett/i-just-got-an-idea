@@ -1,8 +1,9 @@
 
 import { User } from "firebase/auth";
 import { auth } from "../../firebase/clientApp";
-import { Entry } from "./types";
+
 import { v4 } from "uuid";
+import { Entry } from "./types/entry";
 
 export class EntryParser{
     user: User | undefined;

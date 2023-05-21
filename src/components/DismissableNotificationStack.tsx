@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Notification } from '../common/types';
+import { Notification } from '../common/types/notification';
 import '../styles/Common.css';
 import axios from "axios";
 import DismissableNotification from "./DismissableNotification";
@@ -27,8 +27,7 @@ const DismissableNotificationStack: React.FC<DismissableNotificationStackProps> 
 
         API.post(`/api/notification`, notifications.length > 0 ? notifications[0] : Notification.new(user.uid, "Welcome to the session!", "session"), "Error getting notifications: ")
             .then((response) => {
-                console.log("RESPONSE------------------");
-                console.log(response);
+              console.log("Get responses")
                 if (response.data) {
                     let currentNotifications = response.data.notifications as Notification[];
                     setNotifications(currentNotifications);
@@ -51,7 +50,7 @@ useEffect(() => {
 
 const startPolling = () => {
     // setInterval(fetchNotifications, 60000);
-    setInterval(fetchNotifications, 5000);
+    setInterval(fetchNotifications, 10000);
 }
 
 

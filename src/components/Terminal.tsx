@@ -40,7 +40,7 @@ const Terminal: React.FC = () => {
     const intervalId = setInterval(() => {
       currentTextIndex = (currentTextIndex + 1) % helperTexts.length;
       setHelperText(helperTexts[currentTextIndex]);
-    }, 5000); // Change every 5 seconds
+    }, 10000); // Change every 5 seconds
 
     return () => clearInterval(intervalId);
   }, []);

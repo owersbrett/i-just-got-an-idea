@@ -1,5 +1,6 @@
 
-import { QueryConstraints, Entry } from '../common/types';
+import { QueryConstraints } from '../common/types';
+import {  Entry } from '../common/types/entry';
 import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc}from "@firebase/firestore";
 import { collection, getDocFromServer, getDocs } from "firebase/firestore";
 import { firestore } from '../../firebase/clientApp';

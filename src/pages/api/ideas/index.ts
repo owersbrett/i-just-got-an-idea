@@ -1,5 +1,5 @@
 
-import { Idea } from "@/common/types";
+import { Idea } from "@/common/types/idea";
 import { IdeaRepository } from "@/repository/ideaRepository";
 import { NextApiRequest, NextApiResponse } from "next";
 

@@ -2,7 +2,8 @@ import { NotificationRepository } from "@/repository/notificationRepository";
 import axios from "axios";
 import { rateLimit } from "express-rate-limit";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Notification, QueryConstraints } from "@/common/types";
+import {  QueryConstraints } from "@/common/types";
+import { Notification } from "@/common/types/notification";
 import { Timestamp, where } from "firebase/firestore";
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 min
@@ -29,9 +30,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     //     filter: ">",
     //     value: comparisonTimestamp,
     //   };
+      let dismissedQuery: QueryConstraints = {
+        fieldPath: "dismissed",
+        filter: "==",
+        value: false,
+      };
 
 
-      notifications = await NotificationRepository.findWhere([userQuery]);
+      notifications = await NotificationRepository.findWhere([userQuery, dismissedQuery]);
     //   notifications = await NotificationRepository.findWhere([userQuery, dateQuery]);
     } else {
       console.log("No body");

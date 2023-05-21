@@ -1,5 +1,6 @@
 
-import { QueryConstraints, Idea } from '../common/types';
+import { QueryConstraints } from '../common/types';
+import {  Idea } from '../common/types/idea';
 import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc}from "@firebase/firestore";
 import { collection, getDocFromServer, getDocs } from "firebase/firestore";
 import { firestore } from '../../firebase/clientApp';
@@ -14,13 +15,13 @@ export class IdeaRepository {
 
     
     public static async create(idea: Idea): Promise<Idea> {
-        const document = IdeaRepository.notificationDocument(idea.userId);
+        const document = IdeaRepository.notificationDocument(idea.uid);
         await setDoc(document, idea);
         return idea;
     }
 
-    public static async findByUserId(userId: string): Promise<Idea[]> {
-        const queryDocs = query(IdeaRepository.notificationsCollection, where('userId', '==', userId));
+    public static async findByuid(uid: string): Promise<Idea[]> {
+        const queryDocs = query(IdeaRepository.notificationsCollection, where('uid', '==', uid));
         const snapshot = await getDocs(queryDocs);
         return snapshot.docs.map(doc => doc.data() as Idea);
     }

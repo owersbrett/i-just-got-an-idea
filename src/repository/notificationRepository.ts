@@ -1,60 +1,62 @@
-
-import { QueryConstraints, Notification } from '../common/types';
-import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc}from "@firebase/firestore";
+import { QueryConstraints } from "../common/types";
+import { Notification } from "../common/types/notification";
+import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc } from "@firebase/firestore";
 import { collection, getDocFromServer, getDocs } from "firebase/firestore";
-import { firestore } from '../../firebase/clientApp';
+import { firestore } from "../../firebase/clientApp";
 
 export class NotificationRepository {
-    public static collection = 'notifications';
-    public static notificationsCollection = collection(firestore, NotificationRepository.collection);
-    public static notificationDocument = (documentId: string) => doc(firestore, NotificationRepository.collection, documentId);
+  public static collection = "notifications";
+  public static notificationsCollection = collection(firestore, NotificationRepository.collection);
+  public static notificationDocument = (documentId: string) =>
+    doc(firestore, NotificationRepository.collection, documentId);
 
+  public static async update(uid: string, notificationId: string, data: any): Promise<Notification> {
+    const document = NotificationRepository.notificationDocument(notificationId);
+    await setDoc(document, data);
+    let notification = await NotificationRepository.findById(notificationId);
+    if (!notification) notification = Notification.new(uid, "Error updating notification", "error");
+    return notification;
+  }
+  public static async create(notification: Notification): Promise<Notification> {
+    const document = NotificationRepository.notificationDocument(notification.notificationId);
+    await setDoc(document, notification);
+    return notification;
+  }
 
-    public static async update(uid: string, notificationId: string, data: any): Promise<Notification> {
-        const document = NotificationRepository.notificationDocument(notificationId);
-        await setDoc(document, data);
-        let notification =  await NotificationRepository.findById(notificationId);
-        if (!notification) notification =  Notification.new(uid, "Error updating notification", "error");
-        return notification;
-    }
-    public static async create(notification: Notification): Promise<Notification> {
-        const document = NotificationRepository.notificationDocument(notification.notificationId);
-        await setDoc(document, notification);
-        return notification;
-    }
+  public static async findByUid(uid: string): Promise<Notification[]> {
+    const queryDocs = query(NotificationRepository.notificationsCollection, where("uid", "==", uid));
+    const snapshot = await getDocs(queryDocs);
+    return snapshot.docs.map((doc) => doc.data() as Notification);
+  }
 
-    public static async findByUid(uid: string): Promise<Notification[]> {
-        const queryDocs = query(NotificationRepository.notificationsCollection, where('uid', '==', uid));
-        const snapshot = await getDocs(queryDocs);
-        return snapshot.docs.map(doc => doc.data() as Notification);
-    }
-    
-    public static async findWhere(constraints: QueryConstraints[]) : Promise<Notification[]> {
-        const queryDocs = query(NotificationRepository.notificationsCollection, ...constraints.map(constraint => where(constraint.fieldPath, constraint.filter, constraint.value)));
-        const snapshot = await getDocs(queryDocs);
-        return snapshot.docs.map(doc => doc.data() as Notification);
-    }
-    
-    public static async findById(id: string): Promise<Notification | null> {
-        const document = NotificationRepository.notificationDocument(id);
-        const data = await getDoc(document);
-        return data.data() as Notification;
+  public static async findWhere(constraints: QueryConstraints[]): Promise<Notification[]> {
+    const queryDocs = query(
+      NotificationRepository.notificationsCollection,
+      ...constraints.map((constraint) => where(constraint.fieldPath, constraint.filter, constraint.value))
+    );
+    const snapshot = await getDocs(queryDocs);
+    return snapshot.docs.map((doc) => doc.data() as Notification);
+  }
 
-    }
-    
-    // public static async update(id: string, notification: Notification): Promise<Notification | null> {
-    //     const foundNotification = await NotificationRepository.findById(id);
-    //     if (foundNotification) {
-    //         updateDoc(NotificationRepository.notificationDocument(id), notification);
-    //     await Notification.update(notification, { where: { id } });
-    //     return foundNotification;
-    //     }
-    //     return null;
-    // }
-    
-    // public static async delete(id: number): Promise<number> {
-    //     return await Notification.destroy({ where: { id } });
-    // }
+  public static async findById(id: string): Promise<Notification | null> {
+    const document = NotificationRepository.notificationDocument(id);
+    const data = await getDoc(document);
+    return data.data() as Notification;
+  }
+
+  // public static async update(id: string, notification: Notification): Promise<Notification | null> {
+  //     const foundNotification = await NotificationRepository.findById(id);
+  //     if (foundNotification) {
+  //         updateDoc(NotificationRepository.notificationDocument(id), notification);
+  //     await Notification.update(notification, { where: { id } });
+  //     return foundNotification;
+  //     }
+  //     return null;
+  // }
+
+  // public static async delete(id: number): Promise<number> {
+  //     return await Notification.destroy({ where: { id } });
+  // }
 }
 
 // const todosQuery = query(todosCollection,where('done','==',false),limit(10));
