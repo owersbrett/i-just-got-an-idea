@@ -25,7 +25,7 @@ const DismissableNotificationStack: React.FC<DismissableNotificationStackProps> 
     console.log("polling");
     if (user){
 
-        API.post(`/api/notifications`, notifications.length > 0 ? notifications[0] : Notification.new(user.uid, "Welcome to the session!", "session"), "Error getting notifications: ")
+        API.post(`/api/notification`, notifications.length > 0 ? notifications[0] : Notification.new(user.uid, "Welcome to the session!", "session"), "Error getting notifications: ")
             .then((response) => {
                 console.log("RESPONSE------------------");
                 console.log(response);
@@ -61,7 +61,7 @@ const startPolling = () => {
     console.log(notificationId)
     // Call backend API or perform any desired action
     try {
-      await axios.post(`/api/notifications/${notificationId}`);
+      await axios.post(`/api/notification/${notificationId}`, {"notificationId": notificationId, "userId": user?.uid});
       onDismiss(notificationId);
     } catch (error) {
       console.error("Error dismissing notification:", error);

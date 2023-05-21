@@ -25,7 +25,7 @@ const DismissableNotification: React.FC<DismissableNotificationStackProps> = ({ 
             key={notification.notificationId}
             style={{ transition: "opacity 0.3s" }}
         >
-            <div className="item bg-yellow-500 p-4 mb-4 flex flex-row" onClick={() => {
+            <div className="item bg-yellow-500 p-4 mb-4 flex flex-row justify-between" onClick={() => {
                 actions[0](notification);
                 return onClick(notification);
             }}>
