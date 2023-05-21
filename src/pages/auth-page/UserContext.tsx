@@ -5,12 +5,12 @@ import { auth } from "../../../firebase/clientApp";
 
 interface UserContextType {
   user: User | null;
-  userId: string | null;
+  uid: string | null;
 }
 
 const initialUserContext: UserContextType = {
   user: null,
-  userId: null,
+  uid: null,
 };
 
 export const UserContext = createContext<UserContextType>(initialUserContext);
@@ -21,20 +21,20 @@ interface UserContextProviderProps {
 
 export function UserContextProvider({ children }: UserContextProviderProps) {
   const [user, setUser] = useState<User | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [uid, setuid] = useState<string | null>(null);
 
   useEffect(() => {
     // Add your code to listen for changes in the user authentication state
-    // and update the user and userId accordingly
+    // and update the user and uid accordingly
 
     // For example, using the `onAuthStateChanged` function from Firebase Auth
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
-        setUserId(user.uid);
+        setuid(user.uid);
       } else {
         setUser(null);
-        setUserId(null);
+        setuid(null);
       }
     });
 
@@ -43,7 +43,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, userId }}>
+    <UserContext.Provider value={{ user, uid }}>
       {children}
     </UserContext.Provider>
   );

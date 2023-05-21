@@ -2,7 +2,7 @@ import {initializeApp} from "firebase/app";
 import {getFirestore} from "firebase/firestore";
 import {getAuth} from "firebase/auth";
 
-console.log(process.env.IJGAI_FIREBASE_API_KEY);
+
 let firebaseApp = initializeApp( {
     apiKey:process.env.IJGAI_FIREBASE_API_KEY,
     authDomain:process.env.IJGAI_FIREBASE_AUTH_DOMAIN,

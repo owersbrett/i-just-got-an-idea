@@ -8,7 +8,7 @@ export class IdeaRepository {
     public static deleteAll() {
         throw new Error('Method not implemented.');
     }
-    public static collection = 'users';
+    public static collection = 'ideas';
     public static notificationsCollection = collection(firestore, IdeaRepository.collection);
     public static notificationDocument = (documentId: string) => doc(firestore, IdeaRepository.collection, documentId);
 

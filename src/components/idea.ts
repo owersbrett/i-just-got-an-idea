@@ -1,4 +1,5 @@
-import { User } from "@/common/types";
+import { Idea } from "@/common/types";
+import { IdeaRepository } from "@/repository/ideaRepository";
 import { NotificationRepository } from "@/repository/notificationRepository";
 import { UserRepository } from "@/repository/userRepository";
 import axios from "axios";
@@ -11,14 +12,12 @@ const limiter = rateLimit({
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
-    const user: User = req.body as User;
-    await UserRepository.create(user);
-    return res.status(201).send(user);
+    const idea: Idea = req.body as Idea;
+    await IdeaRepository.create(idea);
+    return res.status(201).send({idea: idea});
   } else if (req.method === "GET") {
-      console.log("Getting user.");
-    let user = await UserRepository.findById(req.query.userId as string);
-    console.log("user", user);
-    return res.status(200).send({user: user});
+    let ideas: Idea[] = await IdeaRepository.findByuid(req.query.uid as string);
+    return res.status(200).send({ideas: ideas});
   }
 };
 

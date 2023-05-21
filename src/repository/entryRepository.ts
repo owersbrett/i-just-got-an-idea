@@ -8,25 +8,35 @@ export class EntryRepository {
     public static deleteAll() {
         throw new Error('Method not implemented.');
     }
-    public static collection = 'users';
+    public static collection = 'entries';
     public static notificationsCollection = collection(firestore, EntryRepository.collection);
     public static notificationDocument = (documentId: string) => doc(firestore, EntryRepository.collection, documentId);
 
     
     public static async create(entry: Entry): Promise<Entry> {
-        const document = EntryRepository.notificationDocument(entry.userId);
-        await setDoc(document, entry);
-        return entry;
+        try {
+            console.log("Creating");
+            const document = EntryRepository.notificationDocument(entry.entryId);
+            console.log("Preparing to set doc: "+ document)
+            console.log("With entry: "+ entry)
+            let response = await setDoc(document, entry);
+            console.log("Successfully created entry: " + response)
+            return entry;
+        } catch (e){
+            console.log(e);
+            console.log("ENTRYREPOSITORY")
+            throw new Error("Error creating entry");
+        }
     }
 
-    public static async findByUserIdAndIdeaId(userId: string, ideaId: string): Promise<Entry[]> {
-        let userIdConstraint : QueryConstraints = {fieldPath: 'userId', filter: '==', value: userId};
+    public static async findByuidAndIdeaId(uid: string, ideaId: string): Promise<Entry[]> {
+        let uidConstraint : QueryConstraints = {fieldPath: 'uid', filter: '==', value: uid};
         let ideaIdConstraint : QueryConstraints = {fieldPath: 'ideaId', filter: '==', value: ideaId};
-        return EntryRepository.findWhere([userIdConstraint, ideaIdConstraint]);
+        return EntryRepository.findWhere([uidConstraint, ideaIdConstraint]);
     }
     
-    public static async findByUserId(userId: string): Promise<Entry[]> {
-        const queryDocs = query(EntryRepository.notificationsCollection, where('userId', '==', userId));
+    public static async findByuid(uid: string): Promise<Entry[]> {
+        const queryDocs = query(EntryRepository.notificationsCollection, where('uid', '==', uid));
         const snapshot = await getDocs(queryDocs);
         return snapshot.docs.map(doc => doc.data() as Entry);
     }

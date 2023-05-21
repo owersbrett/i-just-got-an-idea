@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Notification } from "../../common/types";
-import '../../styles/Common.css';
+import { Notification } from "../common/types";
+import '../styles/Common.css';
 import axios from "axios";
 
 interface DismissableNotificationStackProps {
@@ -11,9 +11,14 @@ interface DismissableNotificationStackProps {
 }
 
 const DismissableNotification: React.FC<DismissableNotificationStackProps> = ({ notification, onClick, onClose, actions }) => {
+    const [read, setRead] = useState(notification.read);
 
+    if (read){
+        return <></>
+    }
 
     return (
+        
 
         <div
             className="container flex flex-col"
@@ -27,7 +32,10 @@ const DismissableNotification: React.FC<DismissableNotificationStackProps> = ({ 
                 {notification.content}
                 <button
                     className="close-btn"
-                    onClick={() => onClose(notification)}
+                    onClick={() => {
+                        setRead(true);
+                        return onClose(notification);
+                    }}
                 >
                     X
                 </button>

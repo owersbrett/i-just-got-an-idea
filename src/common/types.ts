@@ -1,43 +1,15 @@
+import { Timestamp } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 export interface QueryConstraints {
   fieldPath: string;
-  filter: "<" | "<=" | "==" | "<" | "<=" | "!=";
+  filter: ">" | ">=" | "==" | "<" | "<=" | "!=";
   value: any;
 }
 
-export class User {
-  userId!: string;
-  email!: string ;
-  phoneNumber!: string;
-  name!: string;
-  createdAt!: Date;
-  updatedAt!: Date;
 
-  isAnonymous(): boolean {
-    return this.userId === "anonymous";
-  }
-  public static anonymous(): User {
-    return {
-      userId: "anonymous",
-      email: "anonymous",
-      name: "anonymous",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as User;
-  }
-  public static new(name: string): User {
-    return {
-      userId: uuidv4(),
-      email: "",
-      name: name,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as User;
-  }
-}
 export class Idea {
   ideaId!: string;
-  userId!: string;
+  uid!: string;
   ideaStatement: string | undefined;
   ideaStatementResponse: string | undefined;
   keywords!: string[];
@@ -48,7 +20,7 @@ export class Idea {
   public static idea(){
     return {
       ideaId: "idea",
-      userId: "anonymous",
+      uid: "anonymous",
     
       ideaStatementResponse: "That's a great idea! You'll probably want to choose a framework. Or I could pick, something like Next.js or Angular. Is there one you would prefer?",
       createdAt: new Date(),
@@ -62,13 +34,13 @@ export class Idea {
   }
 
   public static new(
-    userId: string,
+    uid: string,
     ideaStatement: string,
     keywords: string[]
   ): Idea {
     return {
       ideaId: uuidv4(),
-      userId: userId,
+      uid: uid,
       ideaStatement: ideaStatement,
       ideaStatementResponse: undefined,
       keywords: keywords,
@@ -80,7 +52,7 @@ export class Idea {
 }
 export class Notification {
   notificationId!: string;
-  userId!: string;
+  uid!: string;
   ideaId: string | undefined;
   content!: string;
   notificationType!:
@@ -107,7 +79,7 @@ export class Notification {
   createdAt!: Date;
   read!: boolean;
   public static new(
-    userId: string,
+    uid: string,
     content: string,
     type:
       | "idea"
@@ -132,7 +104,7 @@ export class Notification {
   ): Notification {
     return {
       notificationId: uuidv4(),
-      userId: userId,
+      uid: uid,
       content: content,
       notificationType: type,
       createdAt: new Date(),
@@ -154,17 +126,17 @@ export class Environment {
 }
 export class TemplateConfiguration {
   templateConfigurationId!: string;
-  userId!: string;
+  uid!: string;
   ideaId!: string;
   currentTemplateIndex!: number;
   templateIds!: string[];
   createdAt!: Date;
   updatedAt!: Date;
 
-  public static default(userId: string, ideaId: string): TemplateConfiguration {
+  public static default(uid: string, ideaId: string): TemplateConfiguration {
     return {
       templateConfigurationId: uuidv4(),
-      userId: userId,
+      uid: uid,
       ideaId: ideaId,
       currentTemplateIndex: 0,
       templateIds: ["1", "11", "111", "1111", "11111", "111111", "1111111", "11111111", "111111111", "1111111111"],
@@ -227,7 +199,7 @@ export class Informational {
 
 interface Session {
   id: string;
-  userId: string;
+  uid: string;
   ideaId: string;
   startTime: Date;
   endTime: Date | null;
@@ -236,16 +208,16 @@ interface Session {
 
 export class Jargon {
   jargonId!: string;
-  userId!: string;
+  uid!: string;
   ideaId!: string;
   term!: string;
   definition!: string;
   createdAt!: Date;
   updatedAt!: Date;
-  public static new(userId: string, ideaId: string, term: string, definition: string): Jargon {
+  public static new(uid: string, ideaId: string, term: string, definition: string): Jargon {
     return {
       jargonId: uuidv4(),
-      userId: userId,
+      uid: uid,
       ideaId: ideaId,
       term: term,
       definition: definition,
@@ -256,15 +228,15 @@ export class Jargon {
 }
 export class Cheer {
   cheerId!: string;
-  userId!: string;
+  uid!: string;
   ideaId!: string;
   content!: string;
   createdAt!: Date;
   updatedAt!: Date;
-  public static new(userId: string, ideaId: string, content: string): Cheer {
+  public static new(uid: string, ideaId: string, content: string): Cheer {
     return {
       cheerId: uuidv4(),
-      userId: userId,
+      uid: uid,
       ideaId: ideaId,
       content: content,
       createdAt: new Date(),
@@ -274,15 +246,15 @@ export class Cheer {
 }
 export class Objection {
   objectionId!: string;
-  userId!: string;
+  uid!: string;
   ideaId!: string;
   content!: string;
   createdAt!: Date;
   updatedAt!: Date;
-  public static new(userId: string, ideaId: string, content: string): Objection {
+  public static new(uid: string, ideaId: string, content: string): Objection {
     return {
       objectionId: uuidv4(),
-      userId: userId,
+      uid: uid,
       ideaId: ideaId,
       content: content,
       createdAt: new Date(),
@@ -292,15 +264,15 @@ export class Objection {
 }
 export class Task {
   taskId!: string;
-  userId!: string;
+  uid!: string;
   ideaId!: string;
   content!: string;
   createdAt!: Date;
   updatedAt!: Date;
-  public static new(userId: string, ideaId: string, content: string): Task {
+  public static new(uid: string, ideaId: string, content: string): Task {
     return {
       taskId: uuidv4(),
-      userId: userId,
+      uid: uid,
       ideaId: ideaId,
       content: content,
       createdAt: new Date(),
@@ -311,15 +283,15 @@ export class Task {
 
 export class Trend {
   trendId!: string;
-  userId!: string;
+  uid!: string;
   ideaId!: string;
   content!: string;
   createdAt!: Date;
   updatedAt!: Date;
-  public static new(userId: string, ideaId: string, content: string): Trend {
+  public static new(uid: string, ideaId: string, content: string): Trend {
     return {
       trendId: uuidv4(),
-      userId: userId,
+      uid: uid,
       ideaId: ideaId,
       content: content,
       createdAt: new Date(),
@@ -330,15 +302,15 @@ export class Trend {
 
 export class Goal {
   goalId!: string;
-  userId!: string;
+  uid!: string;
   ideaId!: string;
   content!: string;
   createdAt!: Date;
   updatedAt!: Date;
-  public static new(userId: string, ideaId: string, content: string): Goal {
+  public static new(uid: string, ideaId: string, content: string): Goal {
     return {
       goalId: uuidv4(),
-      userId: userId,
+      uid: uid,
       ideaId: ideaId,
       content: content,
       createdAt: new Date(),
@@ -348,15 +320,15 @@ export class Goal {
 }
 export class Advertisement {
   advertisementId!: string;
-  userId!: string;
+  uid!: string;
   ideaId!: string;
   content!: string;
   createdAt!: Date;
   updatedAt!: Date;
-  public static new(userId: string, ideaId: string, content: string): Advertisement {
+  public static new(uid: string, ideaId: string, content: string): Advertisement {
     return {
       advertisementId: uuidv4(),
-      userId: userId,
+      uid: uid,
       ideaId: ideaId,
       content: content,
       createdAt: new Date(),
@@ -367,15 +339,15 @@ export class Advertisement {
 
 export class FollowUp {
   followUpId!: string;
-  userId!: string;
+  uid!: string;
   ideaId!: string;
   content!: string;
   createdAt!: Date;
   updatedAt!: Date;
-  public static new(userId: string, ideaId: string, content: string): FollowUp {
+  public static new(uid: string, ideaId: string, content: string): FollowUp {
     return {
       followUpId: uuidv4(),
-      userId: userId,
+      uid: uid,
       ideaId: ideaId,
       content: content,
       createdAt: new Date(),
@@ -386,29 +358,18 @@ export class FollowUp {
 
 export class Entry {
   entryId!: string;
-  userId!: string;
+  uid!: string;
   ideaId: string | undefined;
   content!: string;
   intent!: "auth" | "prompt" | "objection"
   type!: "idea" | "follow-up"  | "phone"  | "email";
   createdAt!: Date;
   updatedAt!: Date;
-  public static new(userId: string, ideaId: string | undefined, content: string): Entry {
-    return {
-      entryId: uuidv4(),
-      userId: userId,
-      ideaId: ideaId,
-      content: content,
-      intent: "prompt",
-      type: "idea",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as Entry;
-  }
+
   public static auth( content: string, type: "phone" | "email"): Entry {
     return {
       entryId: uuidv4(),
-      userId: "anonymous",
+      uid: "anonymous",
       ideaId: undefined,
       content: content,
       intent: "auth",
@@ -423,15 +384,15 @@ export class Entry {
 
 export class Ask {
   askId!: string;
-  userId!: string;
+  uid!: string;
   ideaId!: string;
   content!: string;
   createdAt!: Date;
   updatedAt!: Date;
-  public static new(userId: string, ideaId: string, content: string): Ask {
+  public static new(uid: string, ideaId: string, content: string): Ask {
     return {
       askId: uuidv4(),
-      userId: userId,
+      uid: uid,
       ideaId: ideaId,
       content: content,
       createdAt: new Date(),

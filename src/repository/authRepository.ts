@@ -10,12 +10,13 @@ import {
   RecaptchaParameters,
   ConfirmationResult,
   UserCredential,
+  ApplicationVerifier,
 } from "firebase/auth";
 import { auth } from "../../firebase/clientApp";
 import * as types from "@/common/types";
 
 interface AuthRepository {
-  sendPhoneNumberAuthCode: (phoneNumber: string) => Promise<ConfirmationResult>;
+  sendPhoneNumberAuthCode: (phoneNumber: string, captcha: ApplicationVerifier) => Promise<ConfirmationResult>;
   signIn: (confirmationResult: ConfirmationResult, code: string) => Promise<UserCredential>;
 //   signUp: (user: User) => Promise<void>;
   signOut: () => Promise<void>;
@@ -24,6 +25,7 @@ interface AuthRepository {
 
 const authRepository: AuthRepository = {
     signIn: async (confirmationResult: ConfirmationResult, code: string): Promise<UserCredential> => {
+        console.log("signing in");
         const credential = await confirmationResult.confirm(code);
         if (credential) {
             return credential;
@@ -32,16 +34,23 @@ const authRepository: AuthRepository = {
         }
 
     },
-    sendPhoneNumberAuthCode: async (phoneNumber: string) => {
-        return await signInWithPhoneNumber(auth, phoneNumber, new RecaptchaVerifier(phoneNumber, {}, auth));
+    sendPhoneNumberAuthCode: async (phoneNumber: string, captcha: ApplicationVerifier) => {
+        try {
+
+            return await signInWithPhoneNumber(auth, phoneNumber, captcha);
+        }
+        catch (e){
+            console.log(e)
+            throw new Error("Error sending auth code");
+        }
     },
 
     signOut: async () => {
         try {
+            console.log("Signing out...")
             await signOut(auth);
-            // Handle successful sign-out
         } catch (error) {
-            // Handle sign-out error
+            console.log("Sign out error: ", error)
         }
     },
     onAuthStateChanged: function (callback: (user: User | null) => void): void {

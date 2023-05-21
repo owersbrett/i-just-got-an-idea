@@ -1,10 +1,29 @@
 
+import { User } from "firebase/auth";
 import { auth } from "../../firebase/clientApp";
 import { Entry } from "./types";
+import { v4 } from "uuid";
 
 export class EntryParser{
-    public static parseEntry(userId: string, ideaId: string, entryValue: string): Entry{  
-        let parsedEntry = Entry.new(userId, ideaId, entryValue);
+    user: User | undefined;
+    constructor(user: User | null){
+        this.user;
+    }
+
+
+
+
+    public static parseEntry(uid: string, ideaId: string, entryValue: string): Entry{  
+        let parsedEntry: Entry = {
+            entryId: v4(),
+            uid: uid,
+            ideaId: ideaId,
+            content: entryValue,
+            intent: "auth",
+            type: "idea",
+            createdAt: new Date(),
+            updatedAt: new Date()
+        };
         if (parsedEntry.content.startsWith("+")){
             if (EntryParser.isPhoneNumberValid(parsedEntry.content)){
                 parsedEntry.type = "phone";

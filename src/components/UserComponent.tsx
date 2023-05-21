@@ -1,4 +1,5 @@
-import { User } from "@/common/types";
+
+import { User } from "firebase/auth";
 import React from "react";
 
 interface UserComponentProps {
@@ -8,7 +9,7 @@ interface UserComponentProps {
 const UserComponent: React.FC<UserComponentProps> = ({ user }) => {
   return (
     <div>
-      <h2>Welcome, {user?.name}!</h2>
+      <h2>Welcome, {user?.displayName}!</h2>
     </div>
   );
 };

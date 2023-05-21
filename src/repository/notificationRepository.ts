@@ -10,11 +10,11 @@ export class NotificationRepository {
     public static notificationDocument = (documentId: string) => doc(firestore, NotificationRepository.collection, documentId);
 
 
-    public static async update(userId: string, notificationId: string, data: any): Promise<Notification> {
+    public static async update(uid: string, notificationId: string, data: any): Promise<Notification> {
         const document = NotificationRepository.notificationDocument(notificationId);
         await setDoc(document, data);
         let notification =  await NotificationRepository.findById(notificationId);
-        if (!notification) notification =  Notification.new(userId, "Error updating notification", "error");
+        if (!notification) notification =  Notification.new(uid, "Error updating notification", "error");
         return notification;
     }
     public static async create(notification: Notification): Promise<Notification> {
@@ -23,8 +23,8 @@ export class NotificationRepository {
         return notification;
     }
 
-    public static async findByUserId(userId: string): Promise<Notification[]> {
-        const queryDocs = query(NotificationRepository.notificationsCollection, where('userId', '==', userId));
+    public static async findByUid(uid: string): Promise<Notification[]> {
+        const queryDocs = query(NotificationRepository.notificationsCollection, where('uid', '==', uid));
         const snapshot = await getDocs(queryDocs);
         return snapshot.docs.map(doc => doc.data() as Notification);
     }

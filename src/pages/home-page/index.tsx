@@ -1,24 +1,28 @@
 'use client';
 // import Placeholder from "@/components/PlaceholderComponent";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import EvolvingIdeaAnimation from "./EvolvingIdeaAnimation";
-import { Entry, Idea, Notification, User } from "@/common/types";
+
+import { Entry, Idea, Notification } from "@/common/types";
 import "../../styles/Common.css";
 import "../../styles/TerminalInput.css";
-import DismissableNotificationStack from "./DismissableNotificationStack";
-import RevolvingIdeaAnimation from "./RevolvingIdeas";
+
+import RevolvingIdeaAnimation from "../../components/Idea/RevolvingIdeas";
 import { UserContext } from "../auth-page/UserContext";
 import { EntryParser } from "@/common/entryParser";
 import axios from "axios";
+import { AxiosResponse } from "axios";
 import authRepository from "@/repository/authRepository";
-import { ConfirmationResult } from "firebase/auth";
+import { ConfirmationResult, RecaptchaVerifier } from "firebase/auth";
+import { auth } from "../../../firebase/clientApp";
+import { UserRepository } from "@/repository/userRepository";
+import DismissableNotificationStack from "@/components/DismissableNotificationStack";
+import { API } from "../api/api";
 const HomePage: React.FC = () => {
     const { user } = useContext(UserContext);
     const [terminalValue, setTerminalValue] = useState('');
     const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(null);
 
     const [keywords, setKeywords] = useState([] as string[]);
-    const [entry, setEntry] = useState(Entry.new('', '', ''));
     const [ideas, setIdeas] = useState([] as Idea[]);
     const [idea, setIdea] = useState(Idea.new('', '', [] as string[]));
     const [notifications, setNotifications] = useState([] as Notification[]);
@@ -29,103 +33,69 @@ const HomePage: React.FC = () => {
     };
 
 
+
+
+
     const handleEntrySubmitEvent = async (event: React.FormEvent) => {
         event.preventDefault();
         let terminal = terminalValue;
         setTerminalValue('');
 
+
         if (terminalValue.length > 0) {
             if (user) {
-                if (idea.isEmpty()) {
+                if (terminal.startsWith("logout")) {
+                    authRepository.signOut();
+                } else if (!idea.ideaStatement && idea.ideaStatement!.length > 0) {
+                    console.log("We don't have idea statement")
                     let newIdea = Idea.new(user.uid, terminal, keywords);
                     let newEntry = EntryParser.parseEntry(user.uid, newIdea.ideaId, terminal);
-                    try {
-                        await axios.post(`/api/idea`, newIdea);
-                    } catch (error) {
-                        console.error("Error creating idea:", error, newIdea);
-                    }
-                    try {
-                        await axios.post(`/api/entry`, newEntry);
-                    }
-                    catch (error) {
-                        console.error("Error creating entry:", error, newEntry);
-                    }
-
+                    let entryResponse = API.post(`/api/entries`, newEntry, "Error creating entry: ");
+                    let ideaResponse = API.post(`/api/ideas`, newIdea, "Error creating idea: ");
+                    console.log(entryResponse);
+                    console.log(ideaResponse);
+                    setIdea(newIdea)
                 } else {
                     let newEntry = EntryParser.parseEntry(user.uid, idea.ideaId, terminal);
-
-                    try {
-                        await axios.post(`/api/entry`, newEntry);
-                    }
-                    catch (error) {
-                        console.error("Error creating entry:", error, newEntry);
-                    }
-
+                    let entryResponse = await API.post(`/api/entries`, newEntry, "Error creating entry: ");
+                    console.log(entryResponse);
                 }
 
             } else {
-                if (confirmation){
-                    await authRepository.signIn(confirmation, terminal);
-                }
                 let phoneNumber = terminal;
-                console.log(phoneNumber);
-                let phoneNumberValid = EntryParser.isPhoneNumberValid(phoneNumber);
-                if (phoneNumberValid) {
-                    let confirmation = await authRepository.sendPhoneNumberAuthCode(phoneNumber);
-                    setConfirmation(confirmation);
+                console.log("Verifying phone number: " + phoneNumber);
+                if (confirmation) {
+                    console.log("We are confirmed!")
+                    let userCredential = await authRepository.signIn(confirmation, terminal);
+                    UserRepository.getAndOrCreateUser(userCredential);
                 } else {
-                    console.log("Phone number invalid")
+                    let phoneNumberValid = EntryParser.isPhoneNumberValid(phoneNumber);
+                    if (phoneNumberValid) {
+                        await verifyRecaptcha(phoneNumber);
+                    } else {
+                        console.log("Invalid phone number. this should create a notification")
+                    }
                 }
-            
+
+
             }
-       
+
         }
     };
-    const inputRef = useRef<HTMLInputElement | null>(null);
+
+    
 
     useEffect(() => {
-        inputRef.current?.focus();
-    }, []);
+        if (user) {
+            console.log("User is logged in: " + user.uid);
 
-
-    useEffect(() => {
-        const helperTexts = [
-            'I just got an idea...',
-            // 'I want to build an app that sends Notifications to Users based on Topics they\'ve subscribed to...',
-            // 'I want to go to a coding bootcamp, and then get a job as a Software Engineer...',
-            // 'I want to program a phone number that allows people to text it to ask questions from the perspective of an ancient mystic named...',
-            // 'I want to create a website using three.js that allows users to create their own 3D models...',
-            // 'I want to store ideas and keywords to contextualize the AI generated responses...',
-            // 'I want to an app that will break up the Lord\'s prayer in his native tongue of Aramaic and transliterate it in push notifications...',
-        ];
-
-        let currentTextIndex = 0;
-        const intervalId = setInterval(() => {
-            currentTextIndex = (currentTextIndex + 1) % helperTexts.length;
-            setHelperText(helperTexts[currentTextIndex]);
-        }, 5000); // Change every 5 seconds
-
-        return () => clearInterval(intervalId);
-    }, []);
-
-    let getSize = () => {
-        let baseSize = 2.5;
-        if (terminalValue.length > 0) {
-            baseSize = baseSize - terminalValue.length / 10;
-        }
-        if (baseSize < 0.333) {
-            baseSize = 0.333;
-        }
-        return baseSize;
-    }
-    const I_JUST_GOT_AN_IDEA = 'i-just-got-an-idea$ ';
-    let getValue = () => {
-        if (terminalValue.length > 0) {
-            return I_JUST_GOT_AN_IDEA + idea;
         } else {
-            return I_JUST_GOT_AN_IDEA;
+            console.log("No user found");
         }
-    }
+    }, [user]);
+
+    const I_JUST_GOT_AN_IDEA = 'i-just-got-an-idea$ ';
+
 
 
     const onTerminalValueChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -144,12 +114,34 @@ const HomePage: React.FC = () => {
 
 
 
+    function verifyRecaptcha(phoneNumber: string) {
+        const recaptchaContainer = document.getElementById('recaptcha-container') ?? '';
+
+        return new Promise((resolve, reject) => {
+            const recaptchaVerifier = new RecaptchaVerifier(recaptchaContainer, {
+                size: 'normal', // Use 'compact' for a smaller widget
+                callback: async (_: any) => {
+                    console.log(phoneNumber);
+                    let confirmation = await authRepository.sendPhoneNumberAuthCode(phoneNumber, recaptchaVerifier);
+                    console.log(confirmation);
+                    setConfirmation(confirmation);
+                },
+                'expired-callback': () => {
+                    // Verification expired or failed
+                    reject(new Error('reCAPTCHA verification expired'));
+                },
+            }, auth);
+
+            recaptchaVerifier.render();
+        });
+    }
 
     return (
         <div className="container z-1">
             <div className="vw-100">
                 <RevolvingIdeaAnimation ideas={ideas} />
             </div>
+
 
             <div className="vh-90 vw-100 bg-black" >
                 <div style={{ color: 'white' }}>
@@ -174,6 +166,7 @@ const HomePage: React.FC = () => {
                 <DismissableNotificationStack initialNotifications={notifications} />
             </div>
 
+            <div id="recaptcha-container"></div>
         </div>
     );
 };

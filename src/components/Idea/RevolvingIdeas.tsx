@@ -3,7 +3,8 @@ import { Idea } from "@/common/types";
 import IcosahedronComponent from "@/components/PlatonicSolids/Icosahedron";
 import React from "react";
 import { Canvas } from "react-three-fiber";
-import '../styles/idea.css';
+import '../../../src/styles/idea.css';
+
 import { useState } from 'react';
 
 interface RevolvingIdeaAnimationProps {
