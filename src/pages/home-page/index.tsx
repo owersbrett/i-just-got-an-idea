@@ -29,9 +29,8 @@ const HomePage: React.FC = () => {
     const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(null);
 
     const [keywords, setKeywords] = useState([] as string[]);
-    const [ideasToDisplay, setIdeasToDisplay] = useState([] as Idea[]);
     const [ideas, setIdeas] = useState([] as Idea[]);
-    const [idea, setIdea] = useState(Idea.new('', '', [] as string[], 0));
+    const [idea, setIdea] = useState(null as Idea | null);
     const [notifications, setNotifications] = useState([] as Notification[]);
     const [helperText, setHelperText] = useState('I just got an idea...');
 
@@ -67,9 +66,9 @@ const HomePage: React.FC = () => {
     const fetchIdeas = async (uid: string) => {
         const pollingEndpoint = `/api/ideas?uid=${uid}`
         let response = await API.get(pollingEndpoint, "Error getting ideas: ");
-        if (response.data){
+        if (response.data) {
             let currentIdeas = response.data.ideas as Idea[];
-            if (currentIdeas){
+            if (currentIdeas) {
                 let shouldSetIdeas = currentIdeas.length != ideas.length;
                 console.log("Should set ideas: " + shouldSetIdeas);
                 if (shouldSetIdeas) {
@@ -81,11 +80,6 @@ const HomePage: React.FC = () => {
     }
 
 
-    useEffect(() => {
-        if (user) {
-            setIdeasToDisplay(ideas);
-        }
-    }, [ideas]);
 
 
 
@@ -118,12 +112,7 @@ const HomePage: React.FC = () => {
             terminalRunner.sessionId = session.sessionId;
             startPolling(user.uid);
         }
-
     }, [user]);
-
-    const I_JUST_GOT_AN_IDEA = 'i-just-got-an-idea$ ';
-
-
 
     const onTerminalValueChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setTerminalValue(e.target.value);
@@ -173,17 +162,22 @@ const HomePage: React.FC = () => {
         });
     }
 
+    let onSelectIdea = (idea: Idea | null) => {
+        setIdea(idea);
+        terminalRunner.update(idea);
+    }
+
+
     return (
         <div className="container z-1">
             <div className="vw-100">
-                <RevolvingIdeaAnimation key={"revolvingIdeaAnimation"} ideas={ideasToDisplay} />
+                <RevolvingIdeaAnimation key={"revolvingIdeaAnimation"} ideas={ideas} onSelectIdea={onSelectIdea} />
             </div>
 
 
             <div className="vh-90 vw-100 bg-black" >
                 <div style={{ color: 'white' }}>
-                    <form className="terminal-input vh-90" onSubmit={handleEntrySubmitEvent}>
-
+                    <form className="terminal-input vh-90 flex" onSubmit={handleEntrySubmitEvent}>
                         <textarea
                             className="terminal-text-input"
                             value={terminalValue}
@@ -192,12 +186,11 @@ const HomePage: React.FC = () => {
                             onChange={onTerminalValueChange}
                             autoFocus
                         />
-
                     </form>
                 </div>
-                <div style={{ color: 'white' }}>
-
-                </div>
+            </div>
+            <div className="absolute bottom-0 left-0 z-0 fall-through">
+                <p>Mode: {terminalRunner.getEntryType()}</p>
             </div>
             <div className="absolute bottom-0 right-0 z-0 fall-through">
                 <DismissableNotificationStack initialNotifications={notifications} />

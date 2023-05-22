@@ -12,12 +12,21 @@ export class TerminalRunner {
   public uid: string;
   public sessionId: string;
 
-  getEntryType = (): | "entry" | "idea" => {
-    if (this.previousInput === "idea") {
-      return "idea";
+  getEntryType = (): "entry" | "idea" | "blogpost" | "keywords" | "update" => {
+    switch (this.previousInput) {
+      case "idea":
+        return "idea";
+      case "blogpost":
+        return "blogpost";
+      case "keywords":
+        return "keywords";
+      case "update":
+        return "update";
+      default:
+        return "entry";
     }
-    return "entry";
-  }
+  };
+  public idea: Idea | null;
 
   public ideaId: string;
   public previousInput: string;
@@ -30,6 +39,7 @@ export class TerminalRunner {
     this.ideaId = "";
     this.currentInput = "";
     this.previousInput = "";
+    this.idea = null;
   }
   addInput = (input: string) => {
     this.inputs.push(input);
@@ -39,11 +49,15 @@ export class TerminalRunner {
     return { message: "" };
   };
 
-  logoutCommand = () => {
-    authRepository.signOut();
+  logoutCheck = () => {
+    if (this.currentInput === "logout") {
+      authRepository.signOut();
+    }
   };
 
-
+  update = (idea: Idea | null) => {
+    this.idea = idea;
+  }
 
   createEntry = () => {
     const entry: Entry = {
@@ -56,8 +70,8 @@ export class TerminalRunner {
       type: this.getEntryType(),
       createdAt: new Date(),
       updatedAt: new Date(),
-      keywords: this.keywords
-    } ;
+      keywords: this.keywords,
+    };
     console.log("Creating entry");
     console.log(entry);
     axios
@@ -70,32 +84,56 @@ export class TerminalRunner {
       });
   };
 
+  setUserId(user: User | null) {
+    if (user) {
+      this.uid = user.uid;
+    }
+  }
+  clearCheck(){
+    if (this.currentInput === "clear"){
+      this.inputs = [];
+      this.previousInput = "";
+      this.currentInput = "";
+      this.keywords = [];
+      return;
+    }
+  }
+  keywordsCheck(){
+    if (this.previousInput === "keywords"){
+      this.keywords = this.currentInput.split(" ");
+    }
+  }
+
+  ideaCheck(){
+    if (this.idea){
+      this.ideaId = this.idea.ideaId;
+    }
+  }
+  checks(){
+    this.keywordsCheck();
+    this.clearCheck();
+    this.logoutCheck();
+    this.ideaCheck();
+  }
+
+
+
   run = async (user: User | null, defaultFunction: Function, input: string) => {
+    input = input.trim();
     try {
-      if (user) {
-        this.uid = user.uid;
-      }
-      if (this.previousInput.length > 0) {
-        this.previousInput = input.trim();
-        this.currentInput = input.trim();
-        this.inputs.push(this.currentInput);
+      this.setUserId(user);
+
+      if (input) {
+        this.inputs.push(input);
+        this.currentInput = input;
+        this.checks();
+
+        this.createEntry();
+        this.previousInput = this.currentInput;
+        this.currentInput = "";
       } else {
-        if (input.length > 0) {
-          this.inputs.push(input);
-          this.previousInput = this.currentInput;
-          this.currentInput = input;
-          switch (this.currentInput) {
-            case "logout":
-              return this.logoutCommand();
-            default:
-              break;
-          }
-          this.defaultFunction();
-        } else {
-          API.postError(this.uid, "No input provided");
-        }
+        API.postError(this.uid, "No input provided");
       }
-      this.createEntry();
     } catch (e) {
       API.postError(this.uid, "Error running terminal command");
     }

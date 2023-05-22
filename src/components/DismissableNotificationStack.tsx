@@ -75,7 +75,7 @@ const startPolling = () => {
 
   return (
     <>
-      <div className="vw-35 vh-100 overflow-auto flex flex-col justify-end">
+      <div className="vw-35 overflow-auto flex flex-col justify-end">
         {notifications.map((notification) => (
       
           <DismissableNotification key={notification.notificationId} notification={notification} onClick={function (notification: Notification): void {

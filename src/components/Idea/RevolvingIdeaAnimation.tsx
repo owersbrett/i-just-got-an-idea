@@ -13,17 +13,28 @@ import { API, ErrorCallback, SuccessCallback } from '../../pages/api/api';
 
 interface RevolvingIdeaAnimationProps {
     ideas: Idea[]
+    onSelectIdea: (idea: Idea | null) => void;
   }
 
 const areEqual = (prevProps: RevolvingIdeaAnimationProps, nextProps: RevolvingIdeaAnimationProps) => {
-  return prevProps.ideas.length === nextProps.ideas.length;
+  if (prevProps.ideas.length != nextProps.ideas.length) return false;
+
+  const sortedA = [...prevProps.ideas].sort((a,b)=> {
+
+    return a.updatedAt.seconds - b.updatedAt.seconds;
+  });
+  const sortedB = [...nextProps.ideas].sort((a,b)=> {
+    return a.updatedAt.seconds - b.updatedAt.seconds;
+  });
+  for (let i = 0; i < prevProps.ideas.length; i++) {
+    console.log(sortedA[i].updatedAt.seconds != sortedB[i].updatedAt.seconds)
+    if (sortedA[i].updatedAt.seconds != sortedB[i].updatedAt.seconds) {
+      return false;
+    }
+  }
+  return true;
 }
 
-const RevolvingIdeas: React.FC<RevolvingIdeaAnimationProps> = (props: RevolvingIdeaAnimationProps): React.JSX.Element => {
-  return <>
-  
-  </>
-  }
 
 const RevolvingIdeaAnimation: React.FC<RevolvingIdeaAnimationProps> = (props: RevolvingIdeaAnimationProps): React.JSX.Element => {
 
@@ -36,8 +47,10 @@ const RevolvingIdeaAnimation: React.FC<RevolvingIdeaAnimationProps> = (props: Re
     console.log(idea)
     if (selectedIdea === idea) {
       selectIdea(null);
+      props.onSelectIdea(null);
     } else {
       selectIdea(idea);
+      props.onSelectIdea(idea);
     }
   };
 
