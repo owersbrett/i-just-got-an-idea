@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import '../styles/Common.css';
 import axios from "axios";
 import ToastIcon from "./ToastIcon";
-import { NotificationUtility } from "@/utils/NotificationUtility";
 
 
 interface DismissableNotificationStackProps {
@@ -21,13 +20,36 @@ const DismissableNotification: React.FC<DismissableNotificationStackProps> = ({ 
     if (dismissed) {
         return <></>
     }
-    const classes = "item p-4 mb-4 flex flex-row  justify-between items-center rounded-lg bg-yellow-500 " + NotificationUtility.getNotificationClassNamesFromNotificationLevel(notification.level);
+
+    let getNotificationClassNamesFromNotificationLevel = (
+        level: "warning" | "error" | "success" | "info"
+    ): string => {
+        let notificationClassNames = "";
+        switch (level) {
+            case "info":
+                notificationClassNames += "bg-blue-500";
+                break;
+            case "warning":
+                notificationClassNames += "bg-yellow-200";
+                break;
+            case "error":
+                notificationClassNames += "bg-red-500";
+                break;
+            case "success":
+                notificationClassNames += "bg-green-500";
+                break;
+        }
+        return notificationClassNames;
+    }
+
+
+    const classes = "item p-4 mb-4 flex flex-row  justify-between items-center rounded-lg " + getNotificationClassNamesFromNotificationLevel(notification.level);
 
     return (
 
 
         <div
-            className="container flex flex-col text-lg font-bold "
+            className="container flex flex-col  "
             key={notification.notificationId}
             style={{ transition: "opacity 0.3s" }}
         >
@@ -42,10 +64,16 @@ const DismissableNotification: React.FC<DismissableNotificationStackProps> = ({ 
                     </div>
 
                 </div>
-                <p >
+                <div className="flex flex-col">
+                    <p className="text-lg font-bold">
+                        {notification.notificationType.charAt(0).toUpperCase() + notification.notificationType.slice(1)}
+                    </p>
+                    <p >
 
-                    {notification.content.length > 33 ? notification.content.substring(0, 33) + "..." : notification.content}
-                </p>
+                        {notification.content.length > 140 ? notification.content.substring(0, 120) + "..." : notification.content}
+                    </p>
+
+                </div>
                 <button
                     className="close-btn"
                     onClick={() => {

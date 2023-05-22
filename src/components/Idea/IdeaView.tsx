@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 
-import { API } from "@/pages/api/api";
 import { Idea } from "@/common/types/idea";
 
 interface IdeaViewProps {
@@ -10,17 +9,7 @@ interface IdeaViewProps {
 export const IdeaView: React.FC<IdeaViewProps> = (props: IdeaViewProps): React.JSX.Element => {
     const [selectedIdea, selectIdea] = useState<Idea | null>(props.idea);
 
-    // useEffect(() => {
-    //     setInterval(() => {
-    //         API.get(`/api/idea?ideaId=${selectedIdea?.ideaId}`, "Error getting idea: " + selectedIdea?.ideaId ?? "404").then((response) => { 
-    //             selectIdea(response.data as Idea);
-    //         }
-    //         ).catch((error) => {
-    //             console.log(error);
-    //         }
-    //         )
-    //     })
-    // }, [selectedIdea])
+    
 
     return (<form className="text-black p-4">
         <p key={"index"}>Index: {selectedIdea?.index}</p>

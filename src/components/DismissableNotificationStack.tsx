@@ -5,6 +5,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import DismissableNotification from "./DismissableNotification";
 import { UserContext } from "@/pages/auth-page/UserContext";
 import { API, ErrorCallback, SuccessCallback } from "@/pages/api/api";
+import { IntervalConfig } from "@/common/intervalConfig";
 
 interface DismissableNotificationStackProps {
   initialNotifications: Notification[];
@@ -51,8 +52,7 @@ useEffect(() => {
 
 const startPolling = () => {
     fetchNotifications();
-
-    setInterval(fetchNotifications, 15000);
+    setInterval(fetchNotifications, IntervalConfig.minute);
 }
 
 

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { DodecahedronGeometry } from 'three';
+import { IntervalConfig } from '@/common/intervalConfig';
 
 interface DodecahedronComponentProps {
     size: number;
@@ -14,7 +15,7 @@ const DodecahedronComponent = (props: DodecahedronComponentProps) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`);
-    }, 1000);
+    }, IntervalConfig.second);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -33,8 +34,8 @@ const DodecahedronComponent = (props: DodecahedronComponentProps) => {
 
   return (
     <mesh ref={mesh} scale={props.size} >
-      <dodecahedronGeometry args={[1, 0]}  />
-      <meshBasicMaterial color={color} wireframe />
+      <dodecahedronGeometry args={[1, 1]}  />
+      <meshBasicMaterial color={color} wireframe  />
     </mesh>
   );
 };

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import THREE, { IcosahedronGeometry } from 'three';
 import { PlatonicSolidsProps } from './PlatonicSolid';
+import { IntervalConfig } from '@/common/intervalConfig';
 const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
 
 
@@ -23,7 +24,7 @@ const IcosahedronComponent: React.FC<PlatonicSolidsProps> = (props) => {
     const intervalId = setInterval(() => {
 
       setColor(colors[getRandomIndex(colors)]);
-    }, 1000);
+    }, IntervalConfig.second);
     return () => clearInterval(intervalId);
   }, []);
 

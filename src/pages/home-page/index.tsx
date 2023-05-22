@@ -21,9 +21,12 @@ import DismissableNotificationStack from "@/components/DismissableNotificationSt
 import { API, SuccessCallback, ErrorCallback } from "../api/api";
 import { TerminalRunner } from "@/utils/terminal_runner";
 import { SessionContext } from "../auth-page/SessionContext";
+import { IntervalConfig } from "@/common/intervalConfig";
 const HomePage: React.FC = () => {
     const [terminalRunner, setTerminalRunner] = useState<TerminalRunner>(new TerminalRunner());
+    const [history, setHistory] = useState<string>("");
     const { user } = useContext(UserContext);
+
     const { session } = useContext(SessionContext);
     const [terminalValue, setTerminalValue] = useState('');
     const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(null);
@@ -86,12 +89,13 @@ const HomePage: React.FC = () => {
     const handleEntrySubmitEvent = async (event: React.FormEvent) => {
         event.preventDefault();
         let terminal = terminalValue;
-        terminalRunner.addInput(terminal);
+        terminalRunner.addTerminalEntry(terminal);
         setTerminalRunner(terminalRunner);
         setTerminalValue("");
         console.log("user: " + user?.uid)
+        setHistory(history + "\n" + terminal.trim())
         if (user) {
-            terminalRunner.run(user, () => { console.log("Terminal content: \n" + terminal) }, terminal);
+            terminalRunner.run(user);
         } else {
             authenticate(terminal);
         }
@@ -103,7 +107,7 @@ const HomePage: React.FC = () => {
     const startPolling = (uid: string) => {
         fetchIdeas(uid);
 
-        setInterval(() => fetchIdeas(uid), 10000);
+        setInterval(() => fetchIdeas(uid), IntervalConfig.minute);
     }
 
 
@@ -174,9 +178,9 @@ const HomePage: React.FC = () => {
                 <RevolvingIdeaAnimation key={"revolvingIdeaAnimation"} ideas={ideas} onSelectIdea={onSelectIdea} />
             </div>
 
+            <div className="flex flex-row">
+                <div className="vh-90 vw-50 bg-black" >
 
-            <div className="vh-90 vw-100 bg-black" >
-                <div style={{ color: 'white' }}>
                     <form className="terminal-input vh-90 flex" onSubmit={handleEntrySubmitEvent}>
                         <textarea
                             className="terminal-text-input"
@@ -187,9 +191,25 @@ const HomePage: React.FC = () => {
                             autoFocus
                         />
                     </form>
+
+                </div>
+                <div className="vh-90 vw-50 bg-black" >
+
+                    <form className="terminal-input vh-90 flex" onSubmit={handleEntrySubmitEvent}>
+                        <textarea
+                            className="terminal-text-input"
+                            value={history ?? ""}
+                            disabled
+                            prefix='i-just-got-an-idea$'
+                            onKeyDown={onKeyDown}
+                            onChange={onTerminalValueChange}
+                            autoFocus
+                        />
+                    </form>
+
                 </div>
             </div>
-            <div className="absolute bottom-0 left-0 z-0 fall-through">
+            <div className="absolute bottom-0 left-0 z-0 fall-through terminal-text">
                 <p>Mode: {terminalRunner.getEntryType()}</p>
             </div>
             <div className="absolute bottom-0 right-0 z-0 fall-through">

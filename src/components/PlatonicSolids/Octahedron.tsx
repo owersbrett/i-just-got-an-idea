@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { IntervalConfig } from '@/common/intervalConfig';
 
 interface OctohedronComponentProps {
     size: number;
@@ -13,7 +14,7 @@ const OctohedronComponent = (props: OctohedronComponentProps) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setColor(`#${Math.floor(Math.random()*16777215).toString(16)}`);
-    }, 1000);
+    }, IntervalConfig.second);
     return () => clearInterval(intervalId);
   }, []);
 

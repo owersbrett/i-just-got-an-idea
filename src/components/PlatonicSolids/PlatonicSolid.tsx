@@ -27,7 +27,7 @@ const PlatonicSolids: React.FC<PlatonicSolidsProps> = (props) => {
         );
       case 'Octahedron':
         return (
-            <OctohedronComponent size={0} />
+            <OctohedronComponent size={1} />
         );
 
       case 'Sphere':
@@ -43,7 +43,7 @@ const PlatonicSolids: React.FC<PlatonicSolidsProps> = (props) => {
     }
   };
 
-  return <div>{renderShape()}</div>;
+  return <>{renderShape()}</>;
 };
 
 export default PlatonicSolids;

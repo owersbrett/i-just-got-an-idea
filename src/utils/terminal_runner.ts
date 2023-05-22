@@ -11,8 +11,14 @@ export class TerminalRunner {
 
   public uid: string;
   public sessionId: string;
-
+  
   getEntryType = (): "entry" | "idea" | "blogpost" | "keywords" | "update" => {
+    if (this.idea && this.previousInput === "keywords") {
+      return "keywords";
+    }
+    if (this.idea ){
+      return "idea";
+    }
     switch (this.previousInput) {
       case "idea":
         return "idea";
@@ -41,8 +47,9 @@ export class TerminalRunner {
     this.previousInput = "";
     this.idea = null;
   }
-  addInput = (input: string) => {
-    this.inputs.push(input);
+  addTerminalEntry = (input: string) => {
+    this.inputs.push(input.trim());
+    this.currentInput = input.trim();
   };
   defaultFunction = () => {
     console.log("Default function called from TerminalRunner with input: ", this.currentInput);
@@ -90,7 +97,7 @@ export class TerminalRunner {
     }
   }
   clearCheck(){
-    if (this.currentInput === "clear"){
+    if (this.currentInput === "clear" || this.currentInput === "cancel"){
       this.inputs = [];
       this.previousInput = "";
       this.currentInput = "";
@@ -118,16 +125,12 @@ export class TerminalRunner {
 
 
 
-  run = async (user: User | null, defaultFunction: Function, input: string) => {
-    input = input.trim();
+  run = async (user: User | null) => {
     try {
       this.setUserId(user);
 
-      if (input) {
-        this.inputs.push(input);
-        this.currentInput = input;
+      if (this.currentInput) {
         this.checks();
-
         this.createEntry();
         this.previousInput = this.currentInput;
         this.currentInput = "";

@@ -1,4 +1,4 @@
-import { FaExclamationTriangle, FaLightbulb, FaTimesCircle } from 'react-icons/fa';
+import { FaCheckCircle, FaExclamationTriangle, FaLightbulb, FaTimesCircle } from 'react-icons/fa';
 
 interface ToastIconProps {
     type: 'success' | 'error' | 'warning' | 'info';
@@ -8,7 +8,7 @@ const ToastIcon: React.FC<ToastIconProps> = (props: ToastIconProps) => {
     function getIcon() {
         switch (props.type) {
             case 'success':
-                return <FaLightbulb className='icon' />;
+                return <FaCheckCircle className='icon' />;
             case 'error':
                 return <FaTimesCircle className='icon ' />;
             case 'warning':
