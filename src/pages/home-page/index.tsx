@@ -29,6 +29,7 @@ const HomePage: React.FC = () => {
     const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(null);
 
     const [keywords, setKeywords] = useState([] as string[]);
+    const [ideasToDisplay, setIdeasToDisplay] = useState([] as Idea[]);
     const [ideas, setIdeas] = useState([] as Idea[]);
     const [idea, setIdea] = useState(Idea.new('', '', [] as string[], 0));
     const [notifications, setNotifications] = useState([] as Notification[]);
@@ -62,25 +63,29 @@ const HomePage: React.FC = () => {
         }
     }
 
-    const pollIdeas = (uid: string) => {
-        console.log("polling ideas");
+
+    const fetchIdeas = async (uid: string) => {
         const pollingEndpoint = `/api/ideas?uid=${uid}`
-        API.setPoll(pollingEndpoint, parseIdeas, parseIdeasFailed, 10000)
+        let response = await API.get(pollingEndpoint, "Error getting ideas: ");
+        if (response.data){
+            let currentIdeas = response.data.ideas as Idea[];
+            if (currentIdeas){
+                let shouldSetIdeas = currentIdeas.length != ideas.length;
+                console.log("Should set ideas: " + shouldSetIdeas);
+                if (shouldSetIdeas) {
+                    setIdeas(currentIdeas);
+                }
+            }
+        }
 
     }
 
-    const fetchIdeas = (uid: string) => {
-        const pollingEndpoint = `/api/ideas?uid=${uid}`
-        API.get(pollingEndpoint, "Error getting ideas: ").then(parseIdeas, parseIdeasFailed);
 
-    }
-
-
-    const handleKeywordSubmit = (keywordList: string[]) => {
-        setKeywords(keywordList);
-    };
-
-
+    useEffect(() => {
+        if (user) {
+            setIdeasToDisplay(ideas);
+        }
+    }, [ideas]);
 
 
 
@@ -90,10 +95,6 @@ const HomePage: React.FC = () => {
         terminalRunner.addInput(terminal);
         setTerminalRunner(terminalRunner);
         setTerminalValue("");
-        // if (terminalRunner.previousInput === "idea"){
-        // } else {
-        //     setTerminalValue(terminal + '\n');
-        // }
         console.log("user: " + user?.uid)
         if (user) {
             terminalRunner.run(user, () => { console.log("Terminal content: \n" + terminal) }, terminal);
@@ -105,11 +106,17 @@ const HomePage: React.FC = () => {
 
 
 
+    const startPolling = (uid: string) => {
+        fetchIdeas(uid);
+
+        setInterval(() => fetchIdeas(uid), 10000);
+    }
+
+
     useEffect(() => {
         if (user) {
             terminalRunner.sessionId = session.sessionId;
-            fetchIdeas(user.uid);
-            pollIdeas(user.uid);
+            startPolling(user.uid);
         }
 
     }, [user]);
@@ -169,7 +176,7 @@ const HomePage: React.FC = () => {
     return (
         <div className="container z-1">
             <div className="vw-100">
-                <RevolvingIdeaAnimation key={"revolvingIdeaAnimation"} ideas={ideas} />
+                <RevolvingIdeaAnimation key={"revolvingIdeaAnimation"} ideas={ideasToDisplay} />
             </div>
 
 

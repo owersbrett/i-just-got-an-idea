@@ -52,7 +52,7 @@ useEffect(() => {
 const startPolling = () => {
     fetchNotifications();
 
-    setInterval(fetchNotifications, 10000);
+    setInterval(fetchNotifications, 15000);
 }
 
 

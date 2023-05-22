@@ -15,6 +15,15 @@ interface RevolvingIdeaAnimationProps {
     ideas: Idea[]
   }
 
+const areEqual = (prevProps: RevolvingIdeaAnimationProps, nextProps: RevolvingIdeaAnimationProps) => {
+  return prevProps.ideas.length === nextProps.ideas.length;
+}
+
+const RevolvingIdeas: React.FC<RevolvingIdeaAnimationProps> = (props: RevolvingIdeaAnimationProps): React.JSX.Element => {
+  return <>
+  
+  </>
+  }
 
 const RevolvingIdeaAnimation: React.FC<RevolvingIdeaAnimationProps> = (props: RevolvingIdeaAnimationProps): React.JSX.Element => {
 
@@ -75,4 +84,6 @@ const RevolvingIdeaAnimation: React.FC<RevolvingIdeaAnimationProps> = (props: Re
   );
 };
 
-export default RevolvingIdeaAnimation;
+
+
+export default React.memo(RevolvingIdeaAnimation, areEqual);

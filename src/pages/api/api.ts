@@ -43,20 +43,5 @@ export class API {
     );
   }
 
-  public static setPoll = (
-    pollingEndpoint: string,
-    callback: SuccessCallback,
-    errorCallback: ErrorCallback,
-    delay: number
-  ) => {
-    let request = () => axios
-      .get(pollingEndpoint, {
-        headers: {
-          "Content-Type": "application/json",
-        }
-      })
-      .then(callback, errorCallback);
-    let id = setInterval(request, delay);
-    return id;
-  };
+  
 }
