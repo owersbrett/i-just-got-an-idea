@@ -4,29 +4,17 @@ import { useFrame } from '@react-three/fiber';
 import THREE, { IcosahedronGeometry } from 'three';
 import { PlatonicSolidsProps } from './PlatonicSolid';
 import { IntervalConfig } from '@/common/intervalConfig';
-const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
+import { ColorHexcodes } from '../../../functions/functions/src/types/idea';
+
 
 
 const IcosahedronComponent: React.FC<PlatonicSolidsProps> = (props) => {
   const boxRef = useRef<THREE.Mesh>(null!);
   const [isHovered, setHovered] = useState(false);
+  const baseSize = props.scale;
 
-  const [color, setColor] = useState('red');
+  const [colorHex, setColorHex] = useState(props.color);
 
-  function getRandomIndex(list: any[]): number {
-    const length = list.length;
-    const randomIndex = Math.floor(Math.random() * length);
-    return randomIndex;
-  }
-
-  // Change color every second
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-
-      setColor(colors[getRandomIndex(colors)]);
-    }, IntervalConfig.second);
-    return () => clearInterval(intervalId);
-  }, []);
 
 
 
@@ -34,13 +22,13 @@ const IcosahedronComponent: React.FC<PlatonicSolidsProps> = (props) => {
 
     boxRef.current.rotation.x = boxRef.current.rotation.y = 0.5;
   }, []);
-  const getScale = () => props.selected ? 2.2 : isHovered ? 2 : 1.5;
+  const getScale = () => (props.selected ? 2.2 : isHovered ? 2 : 1.5) *baseSize;
   useFrame(() => {
     if (boxRef.current) {
       boxRef.current.scale.set(getScale(), getScale(), getScale());
 
-      boxRef.current.rotation.x += 0.01;
-      boxRef.current.rotation.y += 0.01;
+      boxRef.current.rotation.x += 0.01*baseSize;
+      boxRef.current.rotation.y += 0.01 *baseSize;
     }
   });
   const handlePointerOver = () => setHovered(true);
@@ -50,7 +38,7 @@ const IcosahedronComponent: React.FC<PlatonicSolidsProps> = (props) => {
   return (
     <mesh ref={boxRef} onPointerOver={handlePointerOver} onPointerOut={handlePointerOut}  >
       <icosahedronGeometry args={[1, 0]} />
-      <meshBasicMaterial color={ color}  wireframe={!props.selected}/>
+      <meshBasicMaterial color={ colorHex }  wireframe={!props.selected}/>
     </mesh>
   );
 };

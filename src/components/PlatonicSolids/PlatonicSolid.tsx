@@ -4,10 +4,13 @@ import DodecahedronComponent from './Dodecahedron';
 import IcosahedronComponent from './Icosahedron';
 import OctohedronComponent from './Octahedron';
 import { Sphere, Tetrahedron } from '@react-three/drei';
+import { ColorHexcodes } from '../../../functions/functions/src/types/idea';
 
 export interface PlatonicSolidsProps {
   shape: 'Cube' | 'Dodecahedron' | 'Icosahedron' | 'Octahedron' | 'Sphere' | 'Tetrahedron';
   selected: boolean;
+  scale: number;
+  color: ColorHexcodes;
 }
 
 const PlatonicSolids: React.FC<PlatonicSolidsProps> = (props) => {
@@ -23,7 +26,7 @@ const PlatonicSolids: React.FC<PlatonicSolidsProps> = (props) => {
         );
       case 'Icosahedron':
         return (
-            <IcosahedronComponent shape={'Icosahedron'} selected={props.selected}  />
+            <IcosahedronComponent shape={'Icosahedron'} selected={props.selected} scale={2} color={props.color} />
         );
       case 'Octahedron':
         return (

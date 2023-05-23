@@ -22,11 +22,12 @@ import { API, SuccessCallback, ErrorCallback } from "../api/api";
 import { TerminalRunner } from "@/utils/terminal_runner";
 import { SessionContext } from "../auth-page/SessionContext";
 import { IntervalConfig } from "@/common/intervalConfig";
+import { TemplateConfiguration } from "@/common/types/templateConfiguration";
 const HomePage: React.FC = () => {
     const [terminalRunner, setTerminalRunner] = useState<TerminalRunner>(new TerminalRunner());
     const [history, setHistory] = useState<string>("");
     const { user } = useContext(UserContext);
-
+    const [templateConfigurations, setTemplateConfigurations] = useState([] as TemplateConfiguration[]);
     const { session } = useContext(SessionContext);
     const [terminalValue, setTerminalValue] = useState('');
     const [confirmation, setConfirmation] = useState<ConfirmationResult | null>(null);
@@ -109,11 +110,24 @@ const HomePage: React.FC = () => {
 
         setInterval(() => fetchIdeas(uid), IntervalConfig.minute);
     }
+    const fetchConfigurationTemplates = async () => {
+        const endpoint = `/api/templateConfigurations`
+        let response = await API.get(endpoint, "Error getting template configurations: ");
+        console.log("configuration templates queried!")
+        if (response.data) {
+            console.log(response.data);
+            let data = response.data.templateConfigurations as TemplateConfiguration[];
+            if (data) {
+                setTemplateConfigurations(data);
+            }
+        }
+    }
 
 
     useEffect(() => {
         if (user) {
             terminalRunner.sessionId = session.sessionId;
+            fetchConfigurationTemplates();
             startPolling(user.uid);
         }
     }, [user]);
@@ -175,7 +189,7 @@ const HomePage: React.FC = () => {
     return (
         <div className="container z-1">
             <div className="vw-100">
-                <RevolvingIdeaAnimation key={"revolvingIdeaAnimation"} ideas={ideas} onSelectIdea={onSelectIdea} />
+                <RevolvingIdeaAnimation key={"revolvingIdeaAnimation"} ideas={ideas} onSelectIdea={onSelectIdea} templateConfigurations={templateConfigurations} />
             </div>
 
             <div className="flex flex-row">

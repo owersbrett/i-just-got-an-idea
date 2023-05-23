@@ -8,7 +8,7 @@ export class Entry {
   content!: string;
   keywords!: string[];
   intent!: "auth" | "prompt" | "objection" | "default";
-  type!: "idea" | "blogpost" | "keywords" | "follow-up" | "phone" | "email" | "entry" | "update";
+  type!: "idea" | "blogpost" | "keywords" | "follow-up" | "phone" | "email" | "entry" | "update" | "templateConfiguration";
   createdAt!: Date;
   updatedAt!: Date;
 

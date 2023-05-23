@@ -1,14 +1,15 @@
-import { Timestamp } from "firebase/firestore";
+
 import { v4 as uuidv4 } from "uuid";
 
-
-let violet = "#8F00FF";
-let indigo = "#9b5fe0";
-let blue = "#16a4d8";
-let green = "#8bd346";
-let yellow = "#efdf48";
-let orange = "#f9a52c";
-let red = "#d64e12";
+export enum ColorHexcodes {
+  violet = "#8F00FF",
+  indigo = "#9b5fe0",
+  blue = "#16a4d8",
+  green = "#8bd346",
+  yellow = "#efdf48",
+  orange = "#f9a52c",
+  red = "#d64e12",
+}
 
 export class Idea {
   index!: number;
@@ -17,11 +18,12 @@ export class Idea {
   idea: string | undefined;
   description: string | undefined;
   keywords!: string[];
-  createdAt!: Timestamp;
-  updatedAt!: Timestamp;
+  createdAt!: Date;
+  updatedAt!: Date;
   active!: boolean;
-  color!: | typeof red | typeof orange | typeof yellow | typeof green | typeof blue | typeof indigo | typeof violet;
-  level! : number;
+  color!: string;
+  colorHex!: ColorHexcodes;
+  level!: number;
 
   public static idea() {
     return {
@@ -29,12 +31,13 @@ export class Idea {
       uid: "anonymous",
       idea: "idea",
       description: "description",
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
       active: true,
       index: 0,
-      color: red,
-      level: 0
+      color: "Red",
+      colorHex: ColorHexcodes.red,
+      level: 0,
     } as Idea;
   }
 
@@ -48,9 +51,11 @@ export class Idea {
       uid: uid,
       idea: idea,
       keywords: keywords,
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
       active: true,
+      color: "Red",
+      colorHex: ColorHexcodes.red,
       index: index,
       level: 0,
     } as Idea;

@@ -1,5 +1,15 @@
 import { Timestamp } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
+import { ColorHexcodes } from "../../../functions/functions/src/types/idea";
+
+
+let violet = "#8F00FF";
+let indigo = "#9b5fe0";
+let blue = "#16a4d8";
+let green = "#8bd346";
+let yellow = "#efdf48";
+let orange = "#f9a52c";
+let red = "#d64e12";
 
 export class Idea {
   index!: number;
@@ -11,6 +21,9 @@ export class Idea {
   createdAt!: Timestamp;
   updatedAt!: Timestamp;
   active!: boolean;
+  color!: string;
+  colorHex!: ColorHexcodes
+  level! : number;
 
   public static idea() {
     return {
@@ -22,6 +35,9 @@ export class Idea {
       updatedAt: Timestamp.now(),
       active: true,
       index: 0,
+      color: "Red",
+      colorHex: ColorHexcodes.red,
+      level: 0
     } as Idea;
   }
 
@@ -39,6 +55,9 @@ export class Idea {
       updatedAt: Timestamp.now(),
       active: true,
       index: index,
+      color: "Red",
+      colorHex: ColorHexcodes.red,
+      level: 0,
     } as Idea;
   }
 }

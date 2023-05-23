@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { Entry } from "./entry";
+import { Template } from "./templateConfiguration";
 
 export class Environment {
   environmentId!: string;
@@ -10,38 +11,6 @@ export class Environment {
       environmentId: uuidv4(),
       defaultTemplateConfigurationId: "1",
     } as Environment;
-  }
-}
-export class TemplateConfiguration {
-  templateConfigurationId!: string;
-  uid!: string;
-  ideaId!: string;
-  currentTemplateIndex!: number;
-  templateIds!: string[];
-  createdAt!: Date;
-  updatedAt!: Date;
-
-  public static default(uid: string, ideaId: string): TemplateConfiguration {
-    return {
-      templateConfigurationId: uuidv4(),
-      uid: uid,
-      ideaId: ideaId,
-      currentTemplateIndex: 0,
-      templateIds: ["1", "11", "111", "1111", "11111", "111111", "1111111", "11111111", "111111111", "1111111111"],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as TemplateConfiguration;
-  }
-}
-
-export class Template {
-  templateId!: string;
-  body!: string;
-  public static new(): Template {
-    return {
-      templateId: uuidv4(),
-      body: "What is your idea?",
-    } as Template;
   }
 }
 
