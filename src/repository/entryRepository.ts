@@ -1,17 +1,16 @@
 
 import { QueryConstraints } from '../common/types';
 import {  Entry } from '../common/types/entry';
-import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc}from "@firebase/firestore";
-import { collection, getDocFromServer, getDocs } from "firebase/firestore";
-import { firestore } from '../../firebase/clientApp';
+import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc, collection, getDocFromServer, getDocs } from "firebase/firestore";
+import { db } from '../../firebase/clientApp';
 
 export class EntryRepository {
     public static deleteAll() {
         throw new Error('Method not implemented.');
     }
     public static collection = 'entries';
-    public static notificationsCollection = collection(firestore, EntryRepository.collection);
-    public static notificationDocument = (documentId: string) => doc(firestore, EntryRepository.collection, documentId);
+    public static notificationsCollection = collection(db, EntryRepository.collection);
+    public static notificationDocument = (documentId: string) => doc(db, EntryRepository.collection, documentId);
 
     
     public static async create(entry: Entry): Promise<Entry> {

@@ -1,17 +1,16 @@
 
 import { QueryConstraints } from '../common/types';
 import {  Idea } from '../common/types/idea';
-import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc}from "@firebase/firestore";
-import { collection, getDocFromServer, getDocs } from "firebase/firestore";
-import { firestore } from '../../firebase/clientApp';
+import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc, collection, getDocFromServer, getDocs } from "firebase/firestore";
+import { db } from '../../firebase/clientApp';
 
 export class IdeaRepository {
     public static deleteAll() {
         throw new Error('Method not implemented.');
     }
     public static collection = 'ideas';
-    public static notificationsCollection = collection(firestore, IdeaRepository.collection);
-    public static notificationDocument = (documentId: string) => doc(firestore, IdeaRepository.collection, documentId);
+    public static notificationsCollection = collection(db, IdeaRepository.collection);
+    public static notificationDocument = (documentId: string) => doc(db, IdeaRepository.collection, documentId);
 
     
     public static async create(idea: Idea): Promise<Idea> {

@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow read and write access to idea_submissions for all users
+    match /idea_submissions/{document} {
+      allow read, write: if true;
+    }
+    
+    // Maintain existing rules for other collections
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}

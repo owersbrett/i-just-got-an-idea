@@ -18,6 +18,9 @@
   height: 100vh;
 }
 
+.vw-33 {
+  width: 33.333vw;
+}
 .vw-50 {
   width: 50vw;
 }
@@ -26,6 +29,826 @@
 }
 .vw-100 {
   width: 100vw;
+}
+
+/* Luminescent void animations */
+@keyframes luminousTrail {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4), 0 0 20px rgba(147, 197, 253, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.7), 0 0 40px rgba(147, 197, 253, 0.4), 0 0 60px rgba(255, 255, 255, 0.1);
+  }
+}
+
+@keyframes lightParticle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1) translateY(0px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.3) translateY(-2px);
+  }
+}
+
+@keyframes tunnelJourney {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.9;
+    box-shadow: 0 0 30px rgba(147, 197, 253, 0.7), 0 0 50px rgba(255, 255, 255, 0.3);
+  }
+  100% {
+    transform: scale(1.01);
+    opacity: 0.95;
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
+  }
+}
+
+.luminous-trail {
+  animation: luminousTrail 4s ease-in-out infinite;
+}
+
+.light-particle {
+  animation: lightParticle 3s ease-in-out infinite;
+}
+
+.tunnel-journey {
+  animation: tunnelJourney 2s ease-in-out infinite;
+}
+
+/* Simplified Black Background with Dancing Idea Stars */
+.background-glow-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  background: #000000; /* Pure black background */
+  transition: none; /* No background transitions needed */
+  /* Mobile optimizations */
+  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
+}
+
+/* Remove all energy background classes - not needed anymore */
+
+/* Dancing idea stars - simple twinkling stars scattered around */
+.idea-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(147, 197, 253, 0.8);
+  border-radius: 50%;
+  animation: starDance 3s ease-in-out infinite;
+  box-shadow: 0 0 3px rgba(147, 197, 253, 0.6);
+  /* Mobile optimizations */
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+.idea-star.bright {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+  animation-duration: 2s;
+}
+
+.idea-star.dim {
+  background: rgba(147, 197, 253, 0.4);
+  animation-duration: 4s;
+}
+
+/* Mobile-optimized star dance animation */
+@keyframes starDance {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translateZ(0) scale(1) translateY(0px);
+  }
+  25% {
+    opacity: 0.8;
+    transform: translateZ(0) scale(1.2) translateY(-2px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateZ(0) scale(1.5) translateY(-1px);
+  }
+  75% {
+    opacity: 0.6;
+    transform: translateZ(0) scale(1.1) translateY(-3px);
+  }
+}
+
+/* Mobile-responsive star positions */
+.star-1 { top: 10%; left: 5%; animation-delay: 0s; }
+.star-2 { top: 20%; right: 8%; animation-delay: 0.5s; }
+.star-3 { top: 5%; left: 60%; animation-delay: 1s; }
+.star-4 { bottom: 15%; left: 10%; animation-delay: 1.5s; }
+.star-5 { bottom: 25%; right: 15%; animation-delay: 2s; }
+.star-6 { top: 40%; left: 3%; animation-delay: 2.5s; }
+.star-7 { top: 65%; right: 5%; animation-delay: 3s; }
+.star-8 { bottom: 5%; left: 70%; animation-delay: 0.2s; }
+.star-9 { top: 15%; left: 85%; animation-delay: 0.7s; }
+.star-10 { bottom: 40%; right: 3%; animation-delay: 1.2s; }
+.star-11 { top: 35%; right: 25%; animation-delay: 1.7s; }
+.star-12 { bottom: 30%; left: 25%; animation-delay: 2.2s; }
+
+/* Mobile optimization: Reduce stars on smaller screens */
+@media (max-width: 768px) {
+  .star-9, .star-10, .star-11, .star-12 {
+    display: none;
+  }
+  
+  .idea-star {
+    width: 1.5px;
+    height: 1.5px;
+    box-shadow: 0 0 2px rgba(147, 197, 253, 0.6);
+  }
+  
+  .idea-star.bright {
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* Enhanced Multi-Layer Orb System - starts as tiny speck of light */
+.growing-orb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1px; /* Start as tiny 1px dot */
+  height: 1px; /* Start as tiny 1px dot */
+  border-radius: 50%;
+  animation: orbPulse 3s ease-in-out infinite;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+/* Core Orb - The inner most intense light */
+.orb-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40%;
+  height: 40%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: coreIntensity 2s ease-in-out infinite alternate;
+  filter: blur(5px);
+}
+
+/* Mid Layer - Creates depth */
+.orb-mid-layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  height: 70%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: midLayerRotate 8s linear infinite;
+  opacity: 0.6;
+}
+
+/* Outer Glow - Atmospheric effect */
+.orb-outer-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: outerGlowPulse 4s ease-in-out infinite;
+  opacity: 0.3;
+  filter: blur(30px);
+}
+
+/* Floating energy particles around orb */
+.energy-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  animation: particleFloat 6s ease-in-out infinite;
+  /* Mobile optimizations */
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+/* Mobile optimization: Reduce particle complexity */
+@media (max-width: 768px) {
+  .energy-particle {
+    width: 2px;
+    height: 2px;
+    animation-duration: 8s; /* Slower animation for better performance */
+  }
+}
+
+.particle-1 { animation-delay: 0s; }
+.particle-2 { animation-delay: 1s; }
+.particle-3 { animation-delay: 2s; }
+.particle-4 { animation-delay: 3s; }
+.particle-5 { animation-delay: 4s; }
+.particle-6 { animation-delay: 5s; }
+
+/* Enhanced Orb color variations - simplified for black background */
+.orb-blue, .orb-cyan, .orb-white, .orb-gold {
+  background: transparent; /* No gradients - pure black background */
+}
+
+.orb-core, .orb-mid-layer, .orb-outer-glow {
+  background: transparent; /* Remove all gradient backgrounds */
+}
+
+/* Spiral Idea Paths System */
+.spiral-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.idea-dot {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  opacity: 0;
+  animation: spiralFadeIn 4s ease-in-out forwards;
+}
+
+.spiral-clockwise {
+  animation: spiralClockwise 8s linear infinite;
+}
+
+.spiral-counterclockwise {
+  animation: spiralCounterclockwise 8s linear infinite reverse;
+}
+
+/* Spiral path animations */
+@keyframes spiralClockwise {
+  0% {
+    transform: rotate(0deg) translateX(200px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(360deg) translateX(50px) rotate(-360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes spiralCounterclockwise {
+  0% {
+    transform: rotate(0deg) translateX(200px) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(-360deg) translateX(50px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes spiralFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Simplified spiral dot colors - no gradients */
+.idea-dot {
+  background: rgba(147, 197, 253, 0.8);
+  box-shadow: 0 0 4px rgba(59, 130, 246, 0.6);
+}
+
+/* Growth burst animation */
+.growth-burst {
+  animation: growthBurst 1s ease-out forwards;
+}
+
+/* Pixel growth animation - for when new light is added */
+.pixel-growth {
+  animation: addPixelOfLight 1s ease-out forwards;
+}
+
+/* Energy ripples */
+.energy-ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  border: 2px solid rgba(59, 130, 246, 0.6);
+  animation: rippleExpand 1.5s ease-out forwards;
+}
+
+.ripple-1 {
+  animation-delay: 0s;
+}
+
+.ripple-2 {
+  animation-delay: 0.2s;
+}
+
+.ripple-3 {
+  animation-delay: 0.4s;
+}
+
+/* Idea particles streaming to orb */
+.idea-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(147, 197, 253, 0.8);
+  animation: particleStream 2s ease-out forwards;
+}
+
+.stream-1 {
+  top: 20%;
+  right: 20%;
+  animation-delay: 0s;
+}
+
+.stream-2 {
+  top: 30%;
+  left: 15%;
+  animation-delay: 0.1s;
+}
+
+.stream-3 {
+  bottom: 25%;
+  right: 25%;
+  animation-delay: 0.2s;
+}
+
+.stream-4 {
+  bottom: 35%;
+  left: 20%;
+  animation-delay: 0.3s;
+}
+
+.stream-5 {
+  top: 50%;
+  right: 10%;
+  animation-delay: 0.4s;
+}
+
+.convergence-light {
+  position: absolute;
+  width: 3px;
+  height: 200px;
+  background: linear-gradient(to bottom, rgba(59, 130, 246, 0.8), rgba(147, 197, 253, 0.4), transparent);
+  border-radius: 2px;
+  filter: blur(2px);
+}
+
+.from-top {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: convergeFromTop 1.5s ease-in-out 1.5s forwards;
+}
+
+.from-bottom {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) rotate(180deg);
+  animation: convergeFromBottom 1.5s ease-in-out 1.5s forwards;
+}
+
+.from-left {
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+  animation: convergeFromLeft 1.5s ease-in-out 1.5s forwards;
+}
+
+.from-right {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  animation: convergeFromRight 1.5s ease-in-out 1.5s forwards;
+}
+
+.distant-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.8);
+  animation: distantPulse 1s ease-in-out infinite;
+  filter: blur(1px);
+}
+
+/* Enhanced Keyframe Animations */
+@keyframes orbPulse {
+  0%, 100% {
+    opacity: 0.3;
+    filter: blur(0.5px);
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    filter: blur(0.2px);
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+/* Special animation for when a new "pixel of light" is added */
+@keyframes addPixelOfLight {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+    filter: blur(2px) brightness(2);
+  }
+  30% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2);
+    filter: blur(1px) brightness(1.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    filter: blur(0.5px) brightness(1);
+  }
+}
+
+/* Light ray effect from form to orb */
+@keyframes ideaToOrbRay {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.5);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(-50vh) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100vh) scale(0.3);
+  }
+}
+
+@keyframes coreIntensity {
+  0% {
+    opacity: 0.9;
+    filter: blur(3px);
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(1px);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes midLayerRotate {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+    opacity: 0.4;
+  }
+}
+
+@keyframes outerGlowPulse {
+  0%, 100% {
+    opacity: 0.2;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translate(0, 0) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: translate(20px, -30px) scale(1);
+  }
+  40% {
+    transform: translate(-15px, -60px) scale(0.8);
+  }
+  60% {
+    transform: translate(30px, -40px) scale(1.2);
+  }
+  80% {
+    transform: translate(-10px, -20px) scale(0.6);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(0, 0) scale(0.3);
+    opacity: 0;
+  }
+}
+
+@keyframes growthBurst {
+  0% {
+    filter: blur(15px) brightness(1);
+  }
+  50% {
+    filter: blur(10px) brightness(1.5);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  100% {
+    filter: blur(15px) brightness(1);
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes rippleExpand {
+  0% {
+    width: 0;
+    height: 0;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+  100% {
+    width: 200vw;
+    height: 200vh;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+}
+
+@keyframes particleStream {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  80% {
+    opacity: 0.8;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+    top: 50%;
+    left: 50%;
+  }
+}
+
+@keyframes orbShrinkToDistance {
+  0% {
+    transform: translate(50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.01);
+    opacity: 0;
+    top: 50%;
+    left: 50%;
+  }
+}
+
+@keyframes convergeFromTop {
+  0% {
+    height: 200px;
+    top: 0;
+  }
+  100% {
+    height: 0;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes convergeFromBottom {
+  0% {
+    height: 200px;
+    bottom: 0;
+  }
+  100% {
+    height: 0;
+    bottom: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes convergeFromLeft {
+  0% {
+    height: 200px;
+    left: 0;
+  }
+  100% {
+    height: 0;
+    left: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes convergeFromRight {
+  0% {
+    height: 200px;
+    right: 0;
+  }
+  100% {
+    height: 0;
+    right: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes distantPulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+}
+
+/* Terminal background improvements */
+.terminal-transparent-bg {
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+}
+
+/* Environmental background changes based on orb growth - removed old system */
+
+/* Dynamic light rays emanating from orb */
+.light-ray {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 50vh;
+  transform-origin: 50% 100%;
+  opacity: 0.3;
+  animation: rayRotate 20s linear infinite;
+}
+
+.ray-1 {
+  transform: translate(-50%, -100%) rotate(0deg);
+  animation-delay: 0s;
+}
+
+.ray-2 {
+  transform: translate(-50%, -100%) rotate(45deg);
+  animation-delay: -2.5s;
+}
+
+.ray-3 {
+  transform: translate(-50%, -100%) rotate(90deg);
+  animation-delay: -5s;
+}
+
+.ray-4 {
+  transform: translate(-50%, -100%) rotate(135deg);
+  animation-delay: -7.5s;
+}
+
+.ray-5 {
+  transform: translate(-50%, -100%) rotate(180deg);
+  animation-delay: -10s;
+}
+
+.ray-6 {
+  transform: translate(-50%, -100%) rotate(225deg);
+  animation-delay: -12.5s;
+}
+
+.ray-7 {
+  transform: translate(-50%, -100%) rotate(270deg);
+  animation-delay: -15s;
+}
+
+.ray-8 {
+  transform: translate(-50%, -100%) rotate(315deg);
+  animation-delay: -17.5s;
+}
+
+/* Ray colors based on orb state */
+.orb-blue .light-ray {
+  background: linear-gradient(to top, 
+    rgba(59, 130, 246, 0.4) 0%, 
+    rgba(147, 197, 253, 0.2) 50%, 
+    transparent 100%
+  );
+}
+
+.orb-cyan .light-ray {
+  background: linear-gradient(to top, 
+    rgba(34, 211, 238, 0.5) 0%, 
+    rgba(165, 243, 252, 0.3) 50%, 
+    transparent 100%
+  );
+}
+
+.orb-white .light-ray {
+  background: linear-gradient(to top, 
+    rgba(255, 255, 255, 0.6) 0%, 
+    rgba(241, 245, 249, 0.4) 50%, 
+    transparent 100%
+  );
+}
+
+.orb-gold .light-ray {
+  background: linear-gradient(to top, 
+    rgba(255, 193, 7, 0.7) 0%, 
+    rgba(255, 235, 59, 0.5) 50%, 
+    transparent 100%
+  );
+}
+
+@keyframes rayRotate {
+  0% {
+    transform: translate(-50%, -100%) rotate(0deg);
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(-50%, -100%) rotate(360deg);
+    opacity: 0.1;
+  }
+}
+
+/* Constellation system - distant stars that respond to orb energy */
+.star-constellation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.distant-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  animation: starTwinkle 4s ease-in-out infinite;
+}
+
+.star-1 { top: 10%; left: 15%; animation-delay: 0s; }
+.star-2 { top: 20%; right: 20%; animation-delay: 0.5s; }
+.star-3 { top: 5%; left: 60%; animation-delay: 1s; }
+.star-4 { bottom: 15%; left: 10%; animation-delay: 1.5s; }
+.star-5 { bottom: 25%; right: 25%; animation-delay: 2s; }
+.star-6 { top: 40%; left: 5%; animation-delay: 2.5s; }
+.star-7 { top: 65%; right: 10%; animation-delay: 3s; }
+.star-8 { bottom: 5%; left: 70%; animation-delay: 3.5s; }
+.star-9 { top: 15%; left: 85%; animation-delay: 0.2s; }
+.star-10 { bottom: 40%; right: 5%; animation-delay: 0.7s; }
+
+@keyframes starTwinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
 }
 
 

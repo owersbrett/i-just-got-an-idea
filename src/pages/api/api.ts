@@ -11,6 +11,8 @@ export class API {
   public static notifications = "/api/notifications";
   public static prompts = "/api/prompts";
   public static jargon = "/api/jargon";
+  public static messages = "/api/messages";
+  public static emails = "/api/emails";
 
   public static postError = async (userId: string, errorMessage: string): Promise<AxiosResponse> => {
     let errorNotification = Notification.new(userId, errorMessage, "error");

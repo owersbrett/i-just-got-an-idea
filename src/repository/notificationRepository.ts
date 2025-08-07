@@ -1,14 +1,13 @@
 import { QueryConstraints } from "../common/types";
 import { Notification } from "../common/types/notification";
-import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc } from "@firebase/firestore";
-import { collection, getDocFromServer, getDocs } from "firebase/firestore";
-import { firestore } from "../../firebase/clientApp";
+import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc, collection, getDocFromServer, getDocs } from "firebase/firestore";
+import { db } from "../../firebase/clientApp";
 
 export class NotificationRepository {
   public static collection = "notifications";
-  public static notificationsCollection = collection(firestore, NotificationRepository.collection);
+  public static notificationsCollection = collection(db, NotificationRepository.collection);
   public static notificationDocument = (documentId: string) =>
-    doc(firestore, NotificationRepository.collection, documentId);
+    doc(db, NotificationRepository.collection, documentId);
 
   public static async update(uid: string, notificationId: string, data: any): Promise<Notification> {
     const document = NotificationRepository.notificationDocument(notificationId);

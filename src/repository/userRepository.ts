@@ -1,8 +1,7 @@
 
 import { QueryConstraints } from '../common/types';
-import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc}from "@firebase/firestore";
-import { collection, getDocFromServer, getDocs } from "firebase/firestore";
-import { firestore } from '../../firebase/clientApp';
+import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc, collection, getDocFromServer, getDocs } from "firebase/firestore";
+import { db } from '../../firebase/clientApp';
 import { User, UserCredential } from 'firebase/auth';
 
 export class UserRepository {
@@ -10,8 +9,8 @@ export class UserRepository {
         throw new Error('Method not implemented.');
     }
     public static collection = 'users';
-    public static notificationsCollection = collection(firestore, UserRepository.collection);
-    public static notificationDocument = (documentId: string) => doc(firestore, UserRepository.collection, documentId);
+    public static notificationsCollection = collection(db, UserRepository.collection);
+    public static notificationDocument = (documentId: string) => doc(db, UserRepository.collection, documentId);
     
     public static getAndOrCreateUser(userCredential: UserCredential) {
         if (userCredential){

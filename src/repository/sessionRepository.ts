@@ -1,17 +1,16 @@
 
 import { QueryConstraints } from '../common/types';
 import {  Session } from '../common/types/session';
-import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc}from "@firebase/firestore";
-import { collection, getDocFromServer, getDocs } from "firebase/firestore";
-import { firestore } from '../../firebase/clientApp';
+import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc, collection, getDocFromServer, getDocs } from "firebase/firestore";
+import { db } from '../../firebase/clientApp';
 
 export class SessionRepository {
     public static deleteAll() {
         throw new Error('Method not implemented.');
     }
     public static collection = 'sessions';
-    public static notificationsCollection = collection(firestore, SessionRepository.collection);
-    public static notificationDocument = (documentId: string) => doc(firestore, SessionRepository.collection, documentId);
+    public static notificationsCollection = collection(db, SessionRepository.collection);
+    public static notificationDocument = (documentId: string) => doc(db, SessionRepository.collection, documentId);
 
     
     public static async upsert(session: Session): Promise<Session> {

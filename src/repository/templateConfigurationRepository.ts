@@ -1,9 +1,8 @@
 
 import { QueryConstraints } from '../common/types';
 
-import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc}from "@firebase/firestore";
-import { collection, getDocFromServer, getDocs } from "firebase/firestore";
-import { firestore } from '../../firebase/clientApp';
+import { setDoc, updateDoc, deleteDoc, getDoc, query, where, doc, collection, getDocFromServer, getDocs } from "firebase/firestore";
+import { db } from '../../firebase/clientApp';
 import { TemplateConfiguration } from '../common/types/templateConfiguration';
 
 
@@ -12,8 +11,8 @@ export class TemplateConfigurationRepository {
         throw new Error('Method not implemented.');
     }
     public static collection = 'templateConfigurations';
-    public static templateConfigurationCollection = collection(firestore, TemplateConfigurationRepository.collection);
-    public static templateConfigurationDocument = (documentId: string) => doc(firestore, TemplateConfigurationRepository.collection, documentId);
+    public static templateConfigurationCollection = collection(db, TemplateConfigurationRepository.collection);
+    public static templateConfigurationDocument = (documentId: string) => doc(db, TemplateConfigurationRepository.collection, documentId);
 
     
     public static async create(templateConfiguration: TemplateConfiguration): Promise<TemplateConfiguration> {
