@@ -29,6 +29,7 @@ import { TemplateConfiguration } from "@/common/types/templateConfiguration";
 import { IdeaSubmissionRepository } from "@/repository/ideaSubmissionRepository";
 import { CreateIdeaSubmissionRequest } from "@/common/types/ideaSubmission";
 import DebugIndicator, { DebugIndicatorRef } from "@/components/DebugIndicator";
+import IdeaMatchesHover from "@/components/IdeaMatchesHover";
 const HomePage: React.FC = () => {
     const debugRef = useRef<DebugIndicatorRef>(null);
     const [terminalRunner, setTerminalRunner] = useState<TerminalRunner>(new TerminalRunner());
@@ -51,6 +52,11 @@ const HomePage: React.FC = () => {
     // Spiral idea paths system
     const [spiralDots, setSpiralDots] = useState<Array<{id: string, timestamp: number}>>([]);
     const [cosmicPixels, setCosmicPixels] = useState<Array<{id: string, timestamp: number}>>([]);
+    
+    // Idea matches hover system
+    const [showMatchesHover, setShowMatchesHover] = useState(false);
+    const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
+    const [userIdeaId, setUserIdeaId] = useState<string | null>(null);
 
     const [keywords, setKeywords] = useState([] as string[]);
     const [ideas, setIdeas] = useState([] as Idea[]);
@@ -192,6 +198,11 @@ const HomePage: React.FC = () => {
         const saved = localStorage.getItem('orbEnergyLevel');
         if (saved) {
             setOrbEnergyLevel(parseInt(saved, 10));
+        }
+        // Load user's idea ID if available
+        const savedIdeaId = localStorage.getItem('userIdeaId');
+        if (savedIdeaId) {
+            setUserIdeaId(savedIdeaId);
         }
     }, []);
 
@@ -354,15 +365,49 @@ const HomePage: React.FC = () => {
                 sessionId: session?.sessionId || undefined,
             };
 
-            // Create submission in Firestore
-            const submissionId = await IdeaSubmissionRepository.createSubmission(submissionRequest);
+            // Create submission via API endpoint (with server-side rate limiting)
+            const response = await fetch('/api/idea-submissions/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(submissionRequest)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                // Handle rate limiting and other errors
+                if (response.status === 429) {
+                    throw new Error(`Rate limit exceeded: ${result.message}. Try again in ${Math.ceil((result.retryAfter || 60) / 60)} minutes.`);
+                } else {
+                    throw new Error(result.message || result.error || 'Failed to submit idea');
+                }
+            }
+
+            const submissionId = result.submissionId;
+            
+            // Store the user's idea ID for later match retrieval
+            if (user?.uid && submissionId) {
+                setUserIdeaId(submissionId);
+                // Store in localStorage as backup
+                localStorage.setItem('userIdeaId', submissionId);
+            }
             
             console.log(`Idea submission created successfully: ${submissionId}`);
             console.log('Submission details:', submissionRequest);
+            console.log(`Remaining attempts: ${result.remainingAttempts}`);
 
             // Delay the idea count refresh to allow form fade animation to complete
             setTimeout(async () => {
                 await fetchIdeas();
+                
+                // Check if we should trigger batch processing (every 10 submissions)
+                const newCount = await IdeaSubmissionRepository.getTotalSubmissionCount();
+                if (newCount % 10 === 0 && newCount > 0) {
+                    console.log(`Triggering batch processing for ${newCount} submissions`);
+                    triggerBatchProcessing();
+                }
             }, 2500); // Wait for fade animation to complete (2000ms) plus buffer
             
         } catch (error) {
@@ -388,6 +433,39 @@ const HomePage: React.FC = () => {
             // Show user-friendly error message
             const errorMessage = (error as any)?.message || error?.toString() || 'Unknown error';
             alert(`Failed to submit your idea: ${errorMessage}. Please try again.`);
+        }
+    };
+
+    // Handle mouse hover over "Ideas collected:" text
+    const handleMouseEnter = (event: React.MouseEvent) => {
+        const rect = event.currentTarget.getBoundingClientRect();
+        setHoverPosition({ x: rect.left, y: rect.top });
+        setShowMatchesHover(true);
+    };
+
+    const handleMouseLeave = () => {
+        setShowMatchesHover(false);
+    };
+
+    // Trigger batch processing for idea matching
+    const triggerBatchProcessing = async () => {
+        try {
+            console.log('Triggering batch processing API call...');
+            const response = await fetch('/api/idea-matching/process-batch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const result = await response.json();
+            if (result.success) {
+                console.log(`Batch processing completed: ${result.matchesGenerated} matches generated`);
+            } else {
+                console.log('Batch processing result:', result.message || result.error);
+            }
+        } catch (error) {
+            console.error('Error triggering batch processing:', error);
         }
     };
 
@@ -609,7 +687,13 @@ const HomePage: React.FC = () => {
             {/* Growth indicator for low energy levels - only show after client hydration */}
             {isClient && orbEnergyLevel < 50 && (
                 <div className="absolute bottom-4 sm:bottom-8 left-4 sm:left-8 z-10 text-white/60 text-xs sm:text-sm">
-                    <div>Ideas collected: {ideas.length}</div>
+                    <div 
+                        className="cursor-help hover:text-cyan-400 transition-colors duration-200 inline-block border-b border-dotted border-white/30 hover:border-cyan-400/50"
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                    >
+                        Ideas collected: {ideas.length}
+                    </div>
                     <div className="text-xs opacity-75 hidden sm:block">Each idea adds a pixel of light to the cosmic void</div>
                 </div>
             )}
@@ -673,6 +757,15 @@ const HomePage: React.FC = () => {
                     </div>
                 </>
             )}
+            
+            {/* Idea Matches Hover Component */}
+            <IdeaMatchesHover
+                userId={user?.uid}
+                ideaId={userIdeaId || undefined}
+                isVisible={showMatchesHover}
+                position={hoverPosition}
+                totalIdeasCount={ideas.length}
+            />
         </div>
     );
 };
